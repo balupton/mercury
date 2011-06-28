@@ -1,1 +1,0 @@
-/* This file will document.write in all javascript files */
