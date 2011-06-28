@@ -64,7 +64,7 @@ loadScript = (next) ->
 			return
 		++loadScriptIndex
 		loadScript(next)
-	
+
 	# Exists
 	if includes.scripts[loadScriptIndex]?
 		scriptEl = document.createElement('script')
@@ -76,11 +76,11 @@ loadScript = (next) ->
 		appendEl.appendChild(scriptEl,beforeEl.nextSibling)
 		beforeEl = scriptEl
 		#scriptLoaded()
-	
+
 	# Completed
 	else
 		next()
-	
+
 	# Return
 	true
 
@@ -92,7 +92,7 @@ loadStyle = (next) ->
 	styleLoaded = ->
 		++loadStyleIndex
 		loadStyle(next)
-	
+
 	# Exists
 	if includes.styles[loadStyleIndex]?
 		styleEl = document.createElement('link')
@@ -106,11 +106,11 @@ loadStyle = (next) ->
 		appendEl.insertBefore(styleEl,beforeEl.nextSibling)
 		beforeEl = styleEl
 		styleLoaded()
-	
+
 	# Completed
 	else
 		next()
-	
+
 	# Return
 	true
 
@@ -118,4 +118,6 @@ loadStyle = (next) ->
 unless top.Mercury?
 	loadStyle ->
 		loadScript ->
-			new window.Mercury.PageEditor()
+      document.body.innerHTML = '&nbsp;'
+#      stylesheet.disabled = true for stylesheet in document.styleSheets
+      new window.Mercury.PageEditor()
