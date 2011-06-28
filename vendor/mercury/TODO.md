@@ -6,15 +6,15 @@
 1. Renamed `.js.coffee` to `.coffee` to clean things up
 1. Added `src/` directory and empty `mercury.css` and `mercury.js` loader files
 	- This allows for inclusion of uncompiled/individual files for development, and compiled/bundled files for production
-
 1. Implement the load files
 1. Port over the original `mercury.js` and `mercury_loader.js` files
 1. Move styles over from SCSS to LESS to support node.js and client-side compilation better
+1. Add coffeescript server-side compilation
 
 ## Upcoming
 
 1. Fix styling bug
-1. Add less server-side compilatio
+1. Add less server-side compilation
 1. Allow the template urls to be customisable / loaded in dynamically
 1. Add a compiler/bundler/builder
 1. Move the `vendor/mercury` directory to root and delete other project files
