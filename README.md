@@ -118,7 +118,7 @@ Mercury has been written entirely in CoffeeScript because it simplifies a lot of
 jQuery was used as the javascript library, but is primarily used for the selectors, traversing, and manipulating the DOM.	Chaining is kept to a minimum for readability, and even though much of Mercury could've been written as jQuery plugins, it was not.
 
 
-#### Specs / Integration Tests
+### Specs / Integration Tests
 
 Under heavy refactoring.
 
