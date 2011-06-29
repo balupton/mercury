@@ -72,8 +72,10 @@ class @Mercury.PageEditor
 				alert("Mercury.PageEditor failed to load: #{error}\n\nPlease try refreshing.")
 		else
 			$('body').css({
-				'margin-top': @toolbar.height()
-				'margin-bottom': @statusbar.height()
+				'position': 'absolute'
+				'top': @toolbar.height()
+				'left': 0
+				'padding-bottom': @statusbar.height()
 			})
 			@document = jQuery(document)
 			jQuery("<style mercury-styles=\"true\">")
