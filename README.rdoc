@@ -215,3 +215,9 @@ Mercury is fully tested using Jasmine (via Evergreen) and Cucumber.  You can clo
 
   rake spec:javascripts
   rake cucumber
+
+
+== License
+
+Licensed under the [MIT License](http://creativecommons.org/licenses/MIT/)
+Copyright 2011 [Jeremy Jackson](https://github.com/jejacks0n)
