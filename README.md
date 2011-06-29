@@ -117,16 +117,10 @@ Mercury has been written entirely in CoffeeScript because it simplifies a lot of
 
 jQuery was used as the javascript library, but is primarily used for the selectors, traversing, and manipulating the DOM.	Chaining is kept to a minimum for readability, and even though much of Mercury could've been written as jQuery plugins, it was not.
 
-#### Rails
-
-With the asset handling that comes bundled with Rails 3.1, Rails Engines, and the gem tools, there really wasn't any other option.	The javascript from Mercury can be used by any back end system, and isn't limited to Rails.	Many of the features do require a back end, and that stuff would have to be rewritten in whatever language you wanted support for. The coffeescript files can be found in the repo, and I would be fully supportive of anyone who wanted to add support for different back end frameworks or languages.
 
 #### Specs / Integration Tests
 
-Mercury is fully tested using Jasmine (via Evergreen) and Cucumber.	You can clone the project to run the full suite.
-
-	rake spec:javascripts
-	rake cucumber
+Under heavy refactoring.
 
 
 ## License
