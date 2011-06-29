@@ -119,8 +119,4 @@ loadStyle = (next) ->
 unless top.Mercury? and top.Mercury.version?
 	loadStyle ->
 		loadScript ->
-			document.body.innerHTML = '&nbsp;'
-			#stylesheet.disabled = true for stylesheet in document.styleSheets
 			new window.Mercury.PageEditor()
-			$ ->
-				$('body').createPromiseEvent('mercury-ready').trigger('mercury-ready')

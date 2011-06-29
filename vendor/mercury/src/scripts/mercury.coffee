@@ -39,6 +39,8 @@ Mercury = window.Mercury = jQuery.extend(
 
 		# Configuration
 		config: 
+			useIframe: false
+			
 			cleanStylesOnPaste: true
 			snippets: 
 				optionsUrl: "/mercury/snippets/:name/options"
