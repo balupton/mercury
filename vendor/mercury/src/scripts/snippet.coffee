@@ -1,96 +1,96 @@
 class @Mercury.Snippet
 
-  @all: []
+	@all: []
 
-  @displayOptionsFor: (name) ->
-    Mercury.modal Mercury.config.snippets.optionsUrl.replace(':name', name), {
-      title: 'Snippet Options'
-      handler: 'insertSnippet'
-      snippetName: name
-    }
-    Mercury.snippet = null
-
-
-  @create: (name, options) ->
-    identity = "snippet_#{@all.length}"
-    instance = new Mercury.Snippet(name, identity, options)
-    @all.push(instance)
-    return instance
+	@displayOptionsFor: (name) ->
+		Mercury.modal Mercury.config.snippets.optionsUrl.replace(':name', name), {
+			title: 'Snippet Options'
+			handler: 'insertSnippet'
+			snippetName: name
+		}
+		Mercury.snippet = null
 
 
-  @find: (identity) ->
-    for snippet in @all
-      return snippet if snippet.identity == identity
-    return null
+	@create: (name, options) ->
+		identity = "snippet_#{@all.length}"
+		instance = new Mercury.Snippet(name, identity, options)
+		@all.push(instance)
+		return instance
 
 
-  @load: (snippets) ->
-    for own identity, details of snippets
-      instance = new Mercury.Snippet(details.name, identity, details.options)
-      @all.push(instance)
+	@find: (identity) ->
+		for snippet in @all
+			return snippet if snippet.identity == identity
+		return null
 
 
-  constructor: (@name, @identity, options = {}) ->
-    @version = 0
-    @data = ''
-    @history = new Mercury.HistoryBuffer()
-    @setOptions(options)
+	@load: (snippets) ->
+		for own identity, details of snippets
+			instance = new Mercury.Snippet(details.name, identity, details.options)
+			@all.push(instance)
 
 
-  getHTML: (context, callback = null) ->
-    element = jQuery('<div class="mercury-snippet" contenteditable="false">', context)
-    element.attr({'data-snippet': @identity})
-    element.attr({'data-version': @version})
-    element.html("[#{@identity}]")
-    @loadPreview(element, callback)
-    return element
+	constructor: (@name, @identity, options = {}) ->
+		@version = 0
+		@data = ''
+		@history = new Mercury.HistoryBuffer()
+		@setOptions(options)
 
 
-  getText: (callback) ->
-    return "[--#{@identity}--]"
+	getHTML: (context, callback = null) ->
+		element = jQuery('<div class="mercury-snippet" contenteditable="false">', context)
+		element.attr({'data-snippet': @identity})
+		element.attr({'data-version': @version})
+		element.html("[#{@identity}]")
+		@loadPreview(element, callback)
+		return element
 
 
-  loadPreview: (element, callback = null) ->
-    jQuery.ajax Mercury.config.snippets.previewUrl.replace(':name', @name), {
-      type: 'POST'
-      data: @options
-      success: (data) =>
-        @data = data
-        element.html(data)
-        callback() if callback
-      error: =>
-        alert("Error loading the preview for the #{@name} snippet.")
-    }
+	getText: (callback) ->
+		return "[--#{@identity}--]"
 
 
-  displayOptions: ->
-    Mercury.snippet = @
-    Mercury.modal Mercury.config.snippets.optionsUrl.replace(':name', @name), {
-      title: 'Snippet Options',
-      handler: 'insertSnippet',
-      loadType: 'post',
-      loadData: @options
-    }
+	loadPreview: (element, callback = null) ->
+		jQuery.ajax Mercury.config.snippets.previewUrl.replace(':name', @name), {
+			type: 'POST'
+			data: @options
+			success: (data) =>
+				@data = data
+				element.html(data)
+				callback() if callback
+			error: =>
+				alert("Error loading the preview for the #{@name} snippet.")
+		}
 
 
-  setOptions: (@options) ->
-    delete(@options['authenticity_token'])
-    delete(@options['utf8'])
-    @version += 1
-    @history.push(@options)
+	displayOptions: ->
+		Mercury.snippet = @
+		Mercury.modal Mercury.config.snippets.optionsUrl.replace(':name', @name), {
+			title: 'Snippet Options',
+			handler: 'insertSnippet',
+			loadType: 'post',
+			loadData: @options
+		}
 
 
-  setVersion: (version = null) ->
-    version = parseInt(version)
-    if version && @history.stack[version - 1]
-      @version = version - 1
-      @options = @history.stack[@version]
-      return true
-    return false
+	setOptions: (@options) ->
+		delete(@options['authenticity_token'])
+		delete(@options['utf8'])
+		@version += 1
+		@history.push(@options)
 
 
-  serialize: ->
-    return {
-      name: @name
-      options: @options
-    }
+	setVersion: (version = null) ->
+		version = parseInt(version)
+		if version && @history.stack[version - 1]
+			@version = version - 1
+			@options = @history.stack[@version]
+			return true
+		return false
+
+
+	serialize: ->
+		return {
+			name: @name
+			options: @options
+		}

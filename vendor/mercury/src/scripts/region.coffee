@@ -1,103 +1,103 @@
 class @Mercury.Region
-  type = 'region'
+	type = 'region'
 
-  constructor: (@element, @window, @options = {}) ->
-    @type = 'region' unless @type
-    Mercury.log("building #{@type}", @element, @options)
+	constructor: (@element, @window, @options = {}) ->
+		@type = 'region' unless @type
+		Mercury.log("building #{@type}", @element, @options)
 
-    @document = @window.document
-    @name = @element.attr('id')
-    @history = new Mercury.HistoryBuffer()
-    @build()
-    @bindEvents()
-    @pushHistory()
-
-
-  build: ->
+		@document = @window.document
+		@name = @element.attr('id')
+		@history = new Mercury.HistoryBuffer()
+		@build()
+		@bindEvents()
+		@pushHistory()
 
 
-  focus: ->
+	build: ->
 
 
-  bindEvents: ->
-    Mercury.bind 'mode', (event, options) =>
-      @togglePreview() if options.mode == 'preview'
-
-    Mercury.bind 'focus:frame', =>
-      return if @previewing
-      return unless Mercury.region == @
-      @focus()
-
-    Mercury.bind 'action', (event, options) =>
-      return if @previewing
-      return unless Mercury.region == @
-      @execCommand(options.action, options) if options.action
-
-    @element.mousemove (event) =>
-      return if @previewing
-      return unless Mercury.region == @
-      snippet = jQuery(event.target).closest('.mercury-snippet')
-      if snippet.length
-        @snippet = snippet
-        Mercury.trigger('show:toolbar', {type: 'snippet', snippet: @snippet})
-
-    @element.mouseout (event) =>
-      return if @previewing
-      Mercury.trigger('hide:toolbar', {type: 'snippet', immediately: false})
+	focus: ->
 
 
-  content: (value = null, filterSnippets = false) ->
-    if value != null
-      @element.html(value)
-    else
-      # sanitize the html before we return it
-      container = jQuery('<div>').appendTo(@document.createDocumentFragment())
-      container.html(@element.html().replace(/^\s+|\s+$/g, ''))
+	bindEvents: ->
+		Mercury.bind 'mode', (event, options) =>
+			@togglePreview() if options.mode == 'preview'
 
-      # replace snippet contents to be an identifier
-      if filterSnippets then for snippet, index in container.find('.mercury-snippet')
-        snippet = jQuery(snippet)
-        snippet.attr({contenteditable: null, 'data-version': null})
-        snippet.html("[#{snippet.data('snippet')}]")
+		Mercury.bind 'focus:frame', =>
+			return if @previewing
+			return unless Mercury.region == @
+			@focus()
 
-      return container.html()
+		Mercury.bind 'action', (event, options) =>
+			return if @previewing
+			return unless Mercury.region == @
+			@execCommand(options.action, options) if options.action
 
+		@element.mousemove (event) =>
+			return if @previewing
+			return unless Mercury.region == @
+			snippet = jQuery(event.target).closest('.mercury-snippet')
+			if snippet.length
+				@snippet = snippet
+				Mercury.trigger('show:toolbar', {type: 'snippet', snippet: @snippet})
 
-  togglePreview: ->
-    if @previewing
-      @previewing = false
-      @element.addClass('mercury-region').removeClass('mercury-region-preview')
-      @focus() if Mercury.region == @
-    else
-      @previewing = true
-      @element.addClass('mercury-region-preview').removeClass('mercury-region')
-      Mercury.trigger('region:blurred', {region: @})
-
-
-  execCommand: (action, options = {}) ->
-    @focus()
-    @pushHistory() unless action == 'redo'
-
-    Mercury.log('execCommand', action, options.value)
-    Mercury.changes = true
+		@element.mouseout (event) =>
+			return if @previewing
+			Mercury.trigger('hide:toolbar', {type: 'snippet', immediately: false})
 
 
-  pushHistory: ->
-    @history.push(@content())
+	content: (value = null, filterSnippets = false) ->
+		if value != null
+			@element.html(value)
+		else
+			# sanitize the html before we return it
+			container = jQuery('<div>').appendTo(@document.createDocumentFragment())
+			container.html(@element.html().replace(/^\s+|\s+$/g, ''))
+
+			# replace snippet contents to be an identifier
+			if filterSnippets then for snippet, index in container.find('.mercury-snippet')
+				snippet = jQuery(snippet)
+				snippet.attr({contenteditable: null, 'data-version': null})
+				snippet.html("[#{snippet.data('snippet')}]")
+
+			return container.html()
 
 
-  snippets: ->
-    snippets = {}
-    for element in @element.find('[data-snippet]')
-      snippet = Mercury.Snippet.find(jQuery(element).data('snippet'))
-      snippet.setVersion(jQuery(element).data('version'))
-      snippets[snippet.identity] = snippet.serialize()
-    return snippets
+	togglePreview: ->
+		if @previewing
+			@previewing = false
+			@element.addClass('mercury-region').removeClass('mercury-region-preview')
+			@focus() if Mercury.region == @
+		else
+			@previewing = true
+			@element.addClass('mercury-region-preview').removeClass('mercury-region')
+			Mercury.trigger('region:blurred', {region: @})
 
 
-  serialize: ->
-    return {
-      type: @type
-      value: @content(null, true)
-      snippets: @snippets()
-    }
+	execCommand: (action, options = {}) ->
+		@focus()
+		@pushHistory() unless action == 'redo'
+
+		Mercury.log('execCommand', action, options.value)
+		Mercury.changes = true
+
+
+	pushHistory: ->
+		@history.push(@content())
+
+
+	snippets: ->
+		snippets = {}
+		for element in @element.find('[data-snippet]')
+			snippet = Mercury.Snippet.find(jQuery(element).data('snippet'))
+			snippet.setVersion(jQuery(element).data('version'))
+			snippets[snippet.identity] = snippet.serialize()
+		return snippets
+
+
+	serialize: ->
+		return {
+			type: @type
+			value: @content(null, true)
+			snippets: @snippets()
+		}

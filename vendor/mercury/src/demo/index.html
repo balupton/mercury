@@ -1,6 +1,7 @@
 <html>
 <head>
 	<!-- Mercury -->
+	<script src="mercury_dialogs.js"></script>
 	<script src="../deps/jquery-1.6.1.js"></script>
 	<script src="../deps/jquery-ui-1.8.13.custom.js"></script>
 	<script src="../deps/jquery.additions.js"></script>
@@ -34,7 +35,7 @@
 		<a href="/foo1">l<div>ink with a div in</div> it</a>
 
 		<h2>image wrapped in an anchor</h2>
-		<a href="/foo2"><img alt="clippy" src="/assets/mercury/clippy.png"></a>123
+		<a href="/foo2"><img alt="clippy" src="../images/clippy.png"></a>123
 
 		<h2>table with header and definition cells</h2>
 		<table border="1">
@@ -132,7 +133,7 @@
 		<style type="text/css">img { border: 2px solid red}</style>
 
 		<h2>image next to content wrapped in an anchor</h2>
-		<img alt="Clippy" src="/assets/mercury/clippy.png"><a href="#bookmark1">link for #bookmark1</a>
+		<img alt="Clippy" src="../images/clippy.png"><a href="#bookmark1">link for #bookmark1</a>
 
 		<h2>snippet that's pre-loaded</h2>
 		<div class="mercury-snippet" data-snippet="snippet_1">snippet1</div>
@@ -168,7 +169,7 @@
 [this is a link](foo 'optional title')
 
 ## image ##
-![add alt text](/assets/mercury/clippy.png)
+![add alt text](../images/clippy.png)
 
 ## snippet that's pre-loaded ##
 [--snippet_2--]

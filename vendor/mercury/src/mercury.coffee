@@ -3,6 +3,7 @@ includes =
 	scripts: [
 		'mercury.coffee'
 		'native_extensions.coffee'
+		'jquery_extensions.coffee'
 		'page_editor.coffee'
 		'history_buffer.coffee'
 		'table_editor.coffee'
@@ -115,9 +116,11 @@ loadStyle = (next) ->
 	true
 
 # Load
-unless top.Mercury?
+unless top.Mercury? and top.Mercury.version?
 	loadStyle ->
 		loadScript ->
-      document.body.innerHTML = '&nbsp;'
-#      stylesheet.disabled = true for stylesheet in document.styleSheets
-      new window.Mercury.PageEditor()
+			document.body.innerHTML = '&nbsp;'
+			#stylesheet.disabled = true for stylesheet in document.styleSheets
+			new window.Mercury.PageEditor()
+			$ ->
+				$('body').createPromiseEvent('mercury-ready').trigger('mercury-ready')
