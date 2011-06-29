@@ -1,3 +1,7 @@
+# Check
+if top.Mercury? and top.Mercury.loaded?
+	return
+
 # Includes
 includes =
 	scripts: [
@@ -36,6 +40,7 @@ includes =
 		'modals/insertmedia.coffee'
 		'modals/insertsnippet.coffee'
 		'modals/inserttable.coffee'
+		'loaded.coffee'
 	]
 	styles: [
 		'mercury.less'
@@ -57,11 +62,11 @@ beforeEl = mercuryEl
 loadScriptIndex = 0
 loadScript = (next) ->
 	# Prepare
-	scriptSrc = mercuryBase + 'scripts/' + includes.scripts[loadScriptIndex] + '?js'
+	scriptSrc = mercuryBase + 'scripts/' + includes.scripts[loadScriptIndex]# + '?js'
 	scriptLoaded = ->
-		if typeof this.readyState isnt 'undefined' and this.readyState isnt 'complete'
+		if this.readyState? and this.readyState isnt 'complete'
 			return
-		if this.src isnt scriptSrc
+		if this.src? and this.src isnt scriptSrc
 			return
 		++loadScriptIndex
 		loadScript(next)
@@ -70,13 +75,13 @@ loadScript = (next) ->
 	if includes.scripts[loadScriptIndex]?
 		scriptEl = document.createElement('script')
 		scriptEl.src = scriptSrc
-		#scriptEl.type = 'text/coffeescript'
+		scriptEl.type = 'text/coffeescript'
 		scriptEl.onreadystatechange = scriptLoaded
 		scriptEl.onload = scriptLoaded
 		scriptEl.onerror = scriptLoaded
 		appendEl.appendChild(scriptEl,beforeEl.nextSibling)
 		beforeEl = scriptEl
-		#scriptLoaded()
+		scriptLoaded()
 
 	# Completed
 	else
@@ -116,7 +121,12 @@ loadStyle = (next) ->
 	true
 
 # Load
-unless top.Mercury? and top.Mercury.version?
-	loadStyle ->
-		loadScript ->
-			new window.Mercury.PageEditor()
+timeout = false
+timeoutHandler = ->
+	if window.Mercury? and window.Mercury.loaded?
+		new window.Mercury.PageEditor()
+	else
+		timeout = setTimeout(timeoutHandler,500)
+loadStyle ->
+	loadScript ->
+		timeoutHandler()
