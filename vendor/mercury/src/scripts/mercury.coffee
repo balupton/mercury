@@ -225,7 +225,7 @@ Mercury = window.Mercury = jQuery.extend(
 
 	# Custom Configuration
 	{
-		version: '0.1.3'
+		version: '0.2.0'
 
 		# No IE support yet because it doesn't follow the W3C standards for HTML5 contentEditable (aka designMode).
 		supported: document.getElementById && document.designMode && !jQuery.browser.konqueror && !jQuery.browser.msie
