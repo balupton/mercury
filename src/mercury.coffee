@@ -77,12 +77,14 @@ loadScript = (next) ->
 		scriptEl.src = scriptSrc
 		if /\.coffee$/.test(scriptSrc)
 			scriptEl.type = 'text/coffeescript'
-		scriptEl.onreadystatechange = scriptLoaded
-		scriptEl.onload = scriptLoaded
-		scriptEl.onerror = scriptLoaded
+		else
+			scriptEl.onreadystatechange = scriptLoaded
+			scriptEl.onload = scriptLoaded
+			scriptEl.onerror = scriptLoaded
 		appendEl.appendChild(scriptEl,beforeEl.nextSibling)
 		beforeEl = scriptEl
-		scriptLoaded()
+		if /\.coffee$/.test(scriptSrc)
+			scriptLoaded()
 
 	# Completed
 	else

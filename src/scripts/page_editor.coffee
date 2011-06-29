@@ -71,12 +71,13 @@ class @Mercury.PageEditor
 			catch error
 				alert("Mercury.PageEditor failed to load: #{error}\n\nPlease try refreshing.")
 		else
-			$('body').css({
-				'position': 'absolute'
+			$('body').addClass('mercury-inline').css({
 				'top': @toolbar.height()
 				'left': 0
+				'right': 0
+				'bottom': 0
 				'padding-bottom': @statusbar.height()
-			})
+			}).addClass('mercury-hidden')
 			@document = jQuery(document)
 			jQuery("<style mercury-styles=\"true\">")
 				.html(Mercury.config.injectedStyles)
@@ -118,6 +119,12 @@ class @Mercury.PageEditor
 			Mercury.bind 'focus:frame', => @iframe.focus()
 			Mercury.bind 'focus:window', => setTimeout((=> @focusableElement.focus()), 10)
 
+		Mercury.bind 'region:focused', ->
+			$('body').removeClass('mercury-hidden')
+		
+		Mercury.bind 'region:blurred', ->
+			$('body').addClass('mercury-hidden')
+		
 		Mercury.bind 'action', (event, options) =>
 			 @save() if options.action == 'save'
 
