@@ -19,7 +19,7 @@ class @Mercury.PageEditor
 		if Mercury.config.useIframe
 			document.body.innerHTML = '&nbsp;'
 			#stylesheet.disabled = true for stylesheet in document.styleSheets
-			
+
 			@focusableElement = jQuery('<input>',{
 				type: 'text'
 				style: 'position:absolute;opacity:0'
@@ -52,6 +52,10 @@ class @Mercury.PageEditor
 					.html(Mercury.config.injectedStyles)
 					.appendTo(@document.find('head'))
 
+				$('body').css({
+					'overflow': 'hidden'
+				})
+
 				# jquery: make jQuery evaluate scripts within the context of the iframe window -- note that this means that we
 				# can't use eval in mercury (eg. script tags in ajax responses) because it will eval in the wrong context (you can
 				# use top.Mercury though, if you keep it in mind)
@@ -67,6 +71,10 @@ class @Mercury.PageEditor
 			catch error
 				alert("Mercury.PageEditor failed to load: #{error}\n\nPlease try refreshing.")
 		else
+			$('body').css({
+				'margin-top': @toolbar.height()
+				'margin-bottom': @statusbar.height()
+			})
 			@document = jQuery(document)
 			jQuery("<style mercury-styles=\"true\">")
 				.html(Mercury.config.injectedStyles)
