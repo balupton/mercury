@@ -75,7 +75,8 @@ loadScript = (next) ->
 	if includes.scripts[loadScriptIndex]?
 		scriptEl = document.createElement('script')
 		scriptEl.src = scriptSrc
-		scriptEl.type = 'text/coffeescript'
+		if /\.coffee$/.test(scriptSrc)
+			scriptEl.type = 'text/coffeescript'
 		scriptEl.onreadystatechange = scriptLoaded
 		scriptEl.onload = scriptLoaded
 		scriptEl.onerror = scriptLoaded
@@ -104,7 +105,10 @@ loadStyle = (next) ->
 		styleEl = document.createElement('link')
 		styleEl.href = styleHref
 		styleEl.media = 'screen'
-		styleEl.rel = 'stylesheet/less'
+		if /\.less$/.test(styleHref)
+			styleEl.rel = 'stylesheet/less'
+		else
+			styleEl.rel = 'stylesheet'
 		styleEl.type = 'text/css'
 		#styleEl.onreadystatechange = styleLoaded
 		#styleEl.onload = styleLoaded
