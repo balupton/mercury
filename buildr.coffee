@@ -9,9 +9,10 @@ cwd = process.cwd()
 # Includes
 config = 
 	srcPath: 'src'
-	outPath: 'out'
-	outStylePath: 'out/mercury.css'
-	outScriptPath: 'out/mercury.js'
+	outPath: 'src'
+	outStylePath: 'src/mercury.css'
+	outScriptPath: 'src/mercury.js'
+	compress: true
 	scripts: [
 		'scripts/mercury.coffee'
 		'scripts/native_extensions.coffee'
@@ -127,6 +128,10 @@ class Buildr
 	# Copy srcPath to outPath
 	# next(err)
 	cpSrcToOut: (next) ->
+		# Check
+		if @config.outPath is @config.srcPath
+			return next false
+		
 		# Remove outPath
 		util.rmdir @config.outPath, (err) =>
 			return next err if err
@@ -155,7 +160,6 @@ class Buildr
 			paths: [@config.outPath]
 			optimization: 1
 			filename: fileOutPath
-		
 		# Compile
 		new (less.Parser)(options).parse data, (err, tree) ->
 			if err
@@ -163,7 +167,7 @@ class Buildr
 				next new Error('Less compilation failed')
 			else
 				try
-					css = tree.toCSS(compress: 1)
+					css = tree.toCSS(compress: 1).replace(/\(\.\.\//g,'(')
 					fs.writeFile fileOutPath, css, (err) ->
 						next err
 				catch err

@@ -127,12 +127,5 @@ loadStyle = (next) ->
 	true
 
 # Load
-timeout = false
-timeoutHandler = ->
-	if window.Mercury? and window.Mercury.loaded?
-		new window.Mercury.PageEditor()
-	else
-		timeout = setTimeout(timeoutHandler,500)
 loadStyle ->
 	loadScript ->
-		timeoutHandler()

@@ -1,2 +1,3 @@
 @Mercury.loaded = true
-new window.Mercury.PageEditor()
+$ ->
+	new window.Mercury.PageEditor()

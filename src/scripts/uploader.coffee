@@ -5,15 +5,23 @@
 jQuery.extend Mercury.uploader, {
 
 	show: (file, @options = {}) ->
-		@file = new Mercury.uploader.File(file)
-		if @file.errors
-			alert("Error: #{@file.errors}")
-			return
-		return unless @supported()
-
-		Mercury.trigger('focus:window')
-		@initialize()
-		@appear()
+			@file = new Mercury.uploader.File(file)
+			if @file.errors
+				alert("Error: #{@file.errors}")
+				return
+			return unless @supported()
+			
+			Mercury.trigger('focus:window')
+			
+			# Local Upload
+			if Mercury.config.uploading.enabled is 'local'
+				@file.readAsDataURL (result) =>
+					Mercury.trigger('action', {action: 'insertImage', value: {src: result}})
+			
+			# Remote Upload
+			else if Mercury.config.uploading.enabled
+				@initialize()
+				@appear()
 
 
 	initialize: ->

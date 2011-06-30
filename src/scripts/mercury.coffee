@@ -47,7 +47,7 @@ Mercury = window.Mercury = jQuery.extend(
 				previewUrl: "/mercury/snippets/:name/preview"
 			
 			uploading: 
-				enabled: true
+				enabled: 'local'
 				allowedMimeTypes: [ "image/jpeg", "image/gif", "image/png" ]
 				maxFileSize: 1235242880
 				inputName: "image[image]"
