@@ -1,9 +1,9 @@
-$.fn.firedPromiseEvent = $.fn.firedPromiseEvent or (eventName) ->
+$.fn.firedPromiseEvent ?= (eventName) ->
 	$el = $(this)
 	result = (if $el.data('defer-' + eventName + '-resolved') then true else false)
 	result
 
-$.fn.createPromiseEvent = $.fn.createPromiseEvent or (eventName) ->
+$.fn.createPromiseEvent ?= (eventName) ->
 	$this = $(this)
 	return $this if typeof $this.data('defer-' + eventName + '-resolved') isnt 'undefined'
 	$this.data 'defer-' + eventName + '-resolved', false
@@ -65,8 +65,12 @@ $.fn.createPromiseEvent = $.fn.createPromiseEvent or (eventName) ->
 	
 	$this
 
-$.fn.outerHtml = $.fn.outerHtml or ->
+$.fn.outerHtml ?= ->
 	$el = $(this)
 	el = $el.get(0)
 	outerHtml = el.outerHTML or new XMLSerializer().serializeToString(el)
 	outerHtml
+
+$.fn.mercury ?= ->
+	$(this).each ->
+		window.mercuryInstance.buildRegion $(this)

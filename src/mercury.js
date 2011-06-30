@@ -378,85 +378,107 @@
   };
 }).call(this);
 (function() {
-  $.fn.firedPromiseEvent = $.fn.firedPromiseEvent || function(eventName) {
-    var $el, result;
-    $el = $(this);
-    result = ($el.data('defer-' + eventName + '-resolved') ? true : false);
-    return result;
+  var _base, _base2, _base3, _base4, _ref, _ref2, _ref3, _ref4;
+    if ((_ref = (_base = $.fn).firedPromiseEvent) != null) {
+    _ref;
+  } else {
+    _base.firedPromiseEvent = function(eventName) {
+      var $el, result;
+      $el = $(this);
+      result = ($el.data('defer-' + eventName + '-resolved') ? true : false);
+      return result;
+    };
   };
-  $.fn.createPromiseEvent = $.fn.createPromiseEvent || function(eventName) {
-    var $this, boundHandlers, events;
-    $this = $(this);
-    if (typeof $this.data('defer-' + eventName + '-resolved') !== 'undefined') {
-      return $this;
-    }
-    $this.data('defer-' + eventName + '-resolved', false);
-    events = $.fn.createPromiseEvent.events = $.fn.createPromiseEvent.events || {
-      bind: function(callback) {
-        $this = $(this);
-        return $this.bind(eventName, callback);
-      },
-      trigger: function(event) {
-        var Deferred, specialEvent;
-        $this = $(this);
-        Deferred = $this.data('defer-' + eventName);
-        if (!Deferred) {
-          specialEvent = $.event.special[eventName];
-          specialEvent.setup.call(this);
-          Deferred = $this.data('defer-' + eventName);
-        }
-        $this.data('defer-' + eventName + '-resolved', true);
-        Deferred.resolve();
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        event.stopPropagation();
+    if ((_ref2 = (_base2 = $.fn).createPromiseEvent) != null) {
+    _ref2;
+  } else {
+    _base2.createPromiseEvent = function(eventName) {
+      var $this, boundHandlers, events;
+      $this = $(this);
+      if (typeof $this.data('defer-' + eventName + '-resolved') !== 'undefined') {
         return $this;
-      },
-      setup: function(data, namespaces) {
-        $this = $(this);
-        return $this.data('defer-' + eventName, new $.Deferred());
-      },
-      teardown: function(namespaces) {
-        $this = $(this);
-        return $this.data('defer-' + eventName, null);
-      },
-      add: function(handleObj) {
-        var Deferred, specialEvent;
-        $this = $(this);
-        Deferred = $this.data('defer-' + eventName);
-        specialEvent = $.event.special[eventName];
-        if (!Deferred) {
-          specialEvent.setup.call(this);
-          return specialEvent.add.apply(this, [handleObj]);
-        }
-        return Deferred.done(handleObj.handler);
-      },
-      remove: function(handleObj) {}
+      }
+      $this.data('defer-' + eventName + '-resolved', false);
+      events = $.fn.createPromiseEvent.events = $.fn.createPromiseEvent.events || {
+        bind: function(callback) {
+          $this = $(this);
+          return $this.bind(eventName, callback);
+        },
+        trigger: function(event) {
+          var Deferred, specialEvent;
+          $this = $(this);
+          Deferred = $this.data('defer-' + eventName);
+          if (!Deferred) {
+            specialEvent = $.event.special[eventName];
+            specialEvent.setup.call(this);
+            Deferred = $this.data('defer-' + eventName);
+          }
+          $this.data('defer-' + eventName + '-resolved', true);
+          Deferred.resolve();
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          event.stopPropagation();
+          return $this;
+        },
+        setup: function(data, namespaces) {
+          $this = $(this);
+          return $this.data('defer-' + eventName, new $.Deferred());
+        },
+        teardown: function(namespaces) {
+          $this = $(this);
+          return $this.data('defer-' + eventName, null);
+        },
+        add: function(handleObj) {
+          var Deferred, specialEvent;
+          $this = $(this);
+          Deferred = $this.data('defer-' + eventName);
+          specialEvent = $.event.special[eventName];
+          if (!Deferred) {
+            specialEvent.setup.call(this);
+            return specialEvent.add.apply(this, [handleObj]);
+          }
+          return Deferred.done(handleObj.handler);
+        },
+        remove: function(handleObj) {}
+      };
+      boundHandlers = [];
+      $.each(($this.data('events') || {})[eventName] || [], function(i, event) {
+        return boundHandlers.push(event.handler);
+      });
+      $this.unbind(eventName);
+      $this.bind(eventName, events.trigger);
+      $.fn[eventName] = $.fn[eventName] || events.bind;
+      $.event.special[eventName] = $.event.special[eventName] || {
+        setup: events.setup,
+        teardown: events.teardown,
+        add: events.add,
+        remove: events.remove
+      };
+      $.each(boundHandlers, function(i, handler) {
+        return $this.bind(eventName, handler);
+      });
+      return $this;
     };
-    boundHandlers = [];
-    $.each(($this.data('events') || {})[eventName] || [], function(i, event) {
-      return boundHandlers.push(event.handler);
-    });
-    $this.unbind(eventName);
-    $this.bind(eventName, events.trigger);
-    $.fn[eventName] = $.fn[eventName] || events.bind;
-    $.event.special[eventName] = $.event.special[eventName] || {
-      setup: events.setup,
-      teardown: events.teardown,
-      add: events.add,
-      remove: events.remove
-    };
-    $.each(boundHandlers, function(i, handler) {
-      return $this.bind(eventName, handler);
-    });
-    return $this;
   };
-  $.fn.outerHtml = $.fn.outerHtml || function() {
-    var $el, el, outerHtml;
-    $el = $(this);
-    el = $el.get(0);
-    outerHtml = el.outerHTML || new XMLSerializer().serializeToString(el);
-    return outerHtml;
+    if ((_ref3 = (_base3 = $.fn).outerHtml) != null) {
+    _ref3;
+  } else {
+    _base3.outerHtml = function() {
+      var $el, el, outerHtml;
+      $el = $(this);
+      el = $el.get(0);
+      outerHtml = el.outerHTML || new XMLSerializer().serializeToString(el);
+      return outerHtml;
+    };
+  };
+    if ((_ref4 = (_base4 = $.fn).mercury) != null) {
+    _ref4;
+  } else {
+    _base4.mercury = function() {
+      return $(this).each(function() {
+        return window.mercuryInstance.buildRegion($(this));
+      });
+    };
   };
 }).call(this);
 (function() {
@@ -556,16 +578,12 @@
       }
     };
     PageEditor.prototype.initializeRegions = function() {
-      var region, _i, _j, _len, _len2, _ref, _ref2, _results;
-      _ref = jQuery('.mercury-region', this.document);
+      var region, _i, _len, _ref, _results;
+      jQuery('.mercury-region', this.document).mercury();
+      _ref = this.regions;
+      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         region = _ref[_i];
-        this.buildRegion(jQuery(region));
-      }
-      _ref2 = this.regions;
-      _results = [];
-      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-        region = _ref2[_j];
         if (region.focus) {
           region.focus();
           break;
@@ -576,7 +594,7 @@
     PageEditor.prototype.buildRegion = function(region) {
       var type;
       try {
-        type = region.data('type').titleize();
+        type = (region.data('type') || 'editable').titleize();
         if (this.iframe) {
           return this.regions.push(new Mercury.Regions[type](region, this.iframe.get(0).contentWindow));
         } else {

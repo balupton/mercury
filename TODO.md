@@ -13,12 +13,9 @@
 1. Change indentations from spaces to tabs
 1. Fix styling bug
 1. Make iframe optional
+1. Add a compiler/bundler/builder
 
 ## Upcoming
 
 1. Allow the template urls to be customisable / loaded in dynamically
-1. Add less server-side compilation
-1. Add a compiler/bundler/builder
-1. Move the `vendor/mercury` directory to root and delete other project files
-	1. In another clone, implement the mercury submodule and rename project to mercury-rails
 1. Create a mercury-node repository which will have a node implementation of mercury-rails

@@ -88,7 +88,7 @@ class @Mercury.PageEditor
 		
 
 	initializeRegions: ->
-		@buildRegion(jQuery(region)) for region in jQuery('.mercury-region', @document)
+		jQuery('.mercury-region', @document).mercury()
 		for region in @regions
 			if region.focus
 				region.focus()
@@ -97,7 +97,7 @@ class @Mercury.PageEditor
 
 	buildRegion: (region) ->
 		try
-			type = region.data('type').titleize()
+			type = (region.data('type') or 'editable').titleize()
 			if @iframe
 				@regions.push(new Mercury.Regions[type](region, @iframe.get(0).contentWindow))
 			else
