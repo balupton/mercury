@@ -31,9 +31,8 @@ class @Mercury.Regions.Editable extends Mercury.Region
 			@document.execCommand('styleWithCSS', false, false)
 			@document.execCommand('insertBROnReturn', false, true)
 			@document.execCommand('enableInlineTableEditing', false, false)
-			@document.execCommand('enableObjectResizing', false, false)
-			# ^ image resizing is done through jQuery UI Resizable
-			#   as mozilla is the only browser to support it natively
+			@document.execCommand('enableObjectResizing', false, true)
+			# ^ mozilla is the only browser which supports this (image drag to resize)
 			@document.mercuryEditing = true
 
 

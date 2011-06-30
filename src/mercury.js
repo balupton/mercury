@@ -3091,7 +3091,7 @@
         this.document.execCommand('styleWithCSS', false, false);
         this.document.execCommand('insertBROnReturn', false, true);
         this.document.execCommand('enableInlineTableEditing', false, false);
-        this.document.execCommand('enableObjectResizing', false, false);
+        this.document.execCommand('enableObjectResizing', false, true);
         return this.document.mercuryEditing = true;
       }
     };
