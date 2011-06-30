@@ -127,3 +127,7 @@ Under heavy refactoring.
 
 Licensed under the [MIT License](http://creativecommons.org/licenses/MIT/)
 Copyright 2011 [Jeremy Jackson](https://github.com/jejacks0n)
+
+### Contributors
+
+- [Benjamin Lupton](https://github.com/balupton)

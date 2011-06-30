@@ -1,0 +1,56 @@
+body, td {
+	font: normal normal normal 100%/normal 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+h1 {
+	color: #09F;
+	margin: 20px 0 0 0;
+	font-weight: 200;
+}
+h2 {
+	font-weight: 200;
+	margin: 15px 0 0 0;
+	border-bottom: 1px solid #CCC;
+}
+#content {
+	min-width: 500px;
+	width: 70%;
+	margin: 20px auto;
+}
+#controls {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	padding: 10px;
+	margin: 0;
+	border: 1px solid #999;
+	background: rgba(255, 255, 255, 0.8);
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	list-style-type: none;
+}
+#controls a {
+	color: #333;
+	text-transform: lowercase;
+	text-decoration: none;
+}
+.mercury-snippet {
+	background: rgba(0, 0, 0, 0.5);
+	color: #FFF;
+	width: 300px;
+	height: 100px;
+	margin: 1px 0;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+#snippetable1 {
+	float: left;
+	width: 100%;
+	margin-bottom: 20px;
+}
+#snippetable1 .mercury-snippet {
+	float: left;
+	width: 33%;
+	border: 1px solid #000;
+}
