@@ -1,5 +1,5 @@
 # Check
-if top.Mercury? and top.Mercury.loaded?
+if window.top.Mercury? and window.top.Mercury.loaded?
 	return
 
 # Includes

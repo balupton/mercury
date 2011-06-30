@@ -1,5 +1,11 @@
 (function() {
   var Mercury;
+  if ((window.top.Mercury != null) && (window.top.Mercury.loaded != null)) {
+    window.mercuryWindow = window.top;
+    return;
+  } else {
+    window.mercuryWindow = window;
+  }
   Mercury = window.Mercury = jQuery.extend({
     silent: false,
     debug: true,

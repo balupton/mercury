@@ -29,6 +29,15 @@
 #= require_tree ./dialogs
 #= require_tree ./modals
 #
+
+# iFrame / no-iFrame handle
+if window.top.Mercury? and window.top.Mercury.loaded?
+	window.mercuryWindow = window.top
+	return
+else
+	window.mercuryWindow = window
+
+# Mercury! Do a little dance! Boom cha cha boom cha cha
 Mercury = window.Mercury = jQuery.extend(
 
 	# Default

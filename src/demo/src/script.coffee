@@ -1,7 +1,7 @@
 $ ->
 	$('body').bind 'mercury-ready', ->
-		if top.Mercury
-			top.Mercury.Snippet.load 
+		if mercuryWindow.Mercury
+			mercuryWindow.Mercury.Snippet.load 
 				snippet_1: 
 					name: "example"
 					options: 
