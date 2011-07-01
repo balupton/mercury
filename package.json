@@ -1,0 +1,61 @@
+{
+	"name": "mercury",
+	"version": "0.2.0",
+	"description": "A fully featured HTML5 WYSIWYG editor written in CoffeeScript",
+	"homepage": "https://github.com/balupton/mercury",
+	"keywords": [
+		"contenteditable",
+		"wysiwyg",
+		"wyriwyg",
+		"wywiwyg"
+	],
+	"author": {
+		"name": "Jeremy Jackson",
+		"email": "jeremy@factorylabs.com",
+		"web": "https://github.com/jejacks0n"
+	},
+	"maintainers": [
+		{
+			"name": "Jeremy Jackson",
+			"email": "jeremy@factorylabs.com",
+			"web": "https://github.com/jejacks0n"
+		},
+		{
+			"name": "Benjamin Lupton",
+			"email": "b@lupton.cc",
+			"web": "https://github.com/balupton"
+		}
+	],
+	"contributors": [
+		{
+			"name": "Benjamin Lupton",
+			"email": "b@lupton.cc",
+			"web": "https://github.com/balupton"
+		}
+	],
+	"bugs": {
+		"web": "https://github.com/balupton/mercury/issues"
+	},
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "http://creativecommons.org/licenses/MIT/"
+		}
+	],
+	"repository" : {
+		"type" : "git",
+		"url" : "http://github.com/balupton/mercury.git"
+	},
+	"dependencies": {
+		"less-bal": "1.1",
+		"coffee-script": "1.1",
+		"bal-util": "0.4",
+		"cson": "0.1"
+	},
+	"engines" : {
+		"node": ">=0.4.0"
+	},
+	"directories": {
+		"lib": "src"
+	}
+}
