@@ -6,7 +6,7 @@
   } else {
     window.mercuryWindow = window;
   }
-  Mercury = window.Mercury = jQuery.extend({
+  Mercury = window.Mercury = jQuery.extend(true, {
     silent: false,
     debug: true,
     config: {

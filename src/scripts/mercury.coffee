@@ -40,6 +40,9 @@ else
 # Mercury! Do a little dance! Boom cha cha boom cha cha
 Mercury = window.Mercury = jQuery.extend(
 
+	# Deep Extend
+	true
+
 	# Default
 	{
 		# Options
