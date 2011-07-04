@@ -99,7 +99,11 @@ jQuery.extend Mercury.uploader, {
 			xhr.upload[eventName] = (event) => @uploaderEvents[eventName].call(@, event)
 		xhr.onload = (event) =>
 			try
-				response = jQuery.parseJSON(event.target.responseText)
+				response =
+					if Mercury.config.uploading.handler
+						Mercury.config.uploading.handler(event.target.responseText)
+					else
+						jQuery.parseJSON(event.target.responseText)
 				Mercury.trigger('action', {action: 'insertImage', value: {src: response.image.url}})
 			catch error
 				@updateStatus('Unable to process response')

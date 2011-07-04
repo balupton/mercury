@@ -21,7 +21,8 @@
         allowedMimeTypes: ["image/jpeg", "image/gif", "image/png"],
         maxFileSize: 1235242880,
         inputName: "image[image]",
-        url: "/images"
+        url: "/images",
+        heandler: false
       },
       toolbars: {
         primary: {
@@ -2913,7 +2914,7 @@
       xhr.onload = __bind(function(event) {
         var response;
         try {
-          response = jQuery.parseJSON(event.target.responseText);
+          response = Mercury.config.uploading.handler ? Mercury.config.uploading.handler(event.target.responseText) : jQuery.parseJSON(event.target.responseText);
           return Mercury.trigger('action', {
             action: 'insertImage',
             value: {

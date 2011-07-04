@@ -64,6 +64,7 @@ Mercury = window.Mercury = jQuery.extend(
 				maxFileSize: 1235242880
 				inputName: "image[image]"
 				url: "/images"
+				heandler: false
 
 			toolbars: 
 				primary: 
