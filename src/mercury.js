@@ -3149,28 +3149,16 @@
         }
       }, this));
       this.element.bind('dragenter', __bind(function(event) {
-        if (this.previewing) {
-          return;
-        }
-        if (event.shiftKey) {
+        if (event.preventDefault) {
           event.preventDefault();
         }
         return event.originalEvent.dataTransfer.dropEffect = 'copy';
       }, this));
       this.element.bind('dragover', __bind(function(event) {
-        if (this.previewing) {
-          return;
-        }
-        if (event.shiftKey) {
+        if (event.preventDefault) {
           event.preventDefault();
         }
-        event.originalEvent.dataTransfer.dropEffect = 'copy';
-        if (jQuery.browser.webkit) {
-          clearTimeout(this.dropTimeout);
-          return this.dropTimeout = setTimeout((__bind(function() {
-            return this.element.trigger('possible:drop');
-          }, this)), 10);
-        }
+        return event.originalEvent.dataTransfer.dropEffect = 'copy';
       }, this));
       this.element.bind('drop', __bind(function(event) {
         if (this.previewing) {
@@ -3183,20 +3171,11 @@
         if (!event.originalEvent.dataTransfer.files.length) {
           return;
         }
-        event.preventDefault();
+        if (event.preventDefault) {
+          event.preventDefault();
+        }
         this.focus();
         return Mercury.uploader(event.originalEvent.dataTransfer.files[0]);
-      }, this));
-      this.element.bind('possible:drop', __bind(function(event) {
-        var snippet;
-        if (this.previewing) {
-          return;
-        }
-        if (snippet = this.element.find('img[data-snippet]').get(0)) {
-          this.focus();
-          Mercury.Snippet.displayOptionsFor(jQuery(snippet).data('snippet'));
-          return this.document.execCommand('undo', false, null);
-        }
       }, this));
       this.element.bind('paste', __bind(function() {
         var content;
