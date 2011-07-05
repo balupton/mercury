@@ -2929,7 +2929,7 @@
             }
           });
         } catch (error) {
-          return this.updateStatus('Unable to process response: ' + error.toString());
+          return this.updateStatus('Unable to process response:<br/>' + error.toString());
         }
       }, this);
       xhr.open('post', Mercury.config.uploading.url, true);
@@ -3000,7 +3000,7 @@
       },
       onerror: function() {
         this.updateStatus('Error: Unable to upload the file');
-        return this.hide(3);
+        return this.hide(5);
       }
     }
   });
