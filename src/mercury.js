@@ -22,7 +22,7 @@
         maxFileSize: 1235242880,
         inputName: "image[image]",
         url: "/images",
-        heandler: false
+        handler: false
       },
       toolbars: {
         primary: {
@@ -81,8 +81,8 @@
             }
           ]
         },
-        editable: {
-          _regions: ["editable", "markupable"],
+        simple: {
+          _regions: ["simple", "editable", "markupable"],
           predefined: {
             style: [
               "Style", null, {
@@ -105,7 +105,7 @@
                 palette: "/mercury/palettes/backcolor",
                 context: true,
                 preload: true,
-                regions: ["editable"]
+                regions: ["simple", "editable"]
               }
             ],
             sep1: " ",
@@ -114,7 +114,7 @@
                 palette: "/mercury/palettes/forecolor",
                 context: true,
                 preload: true,
-                regions: ["editable"]
+                regions: ["simple", "editable"]
               }
             ],
             sep2: "-"
@@ -133,19 +133,19 @@
             overline: [
               "Overline", null, {
                 context: true,
-                regions: ["editable"]
+                regions: ["simple", "editable"]
               }
             ],
             strikethrough: [
               "Strikethrough", null, {
                 context: true,
-                regions: ["editable"]
+                regions: ["simple", "editable"]
               }
             ],
             underline: [
               "Underline", null, {
                 context: true,
-                regions: ["editable"]
+                regions: ["simple", "editable"]
               }
             ],
             sep: "-"
@@ -160,9 +160,11 @@
               "Superscript", null, {
                 context: true
               }
-            ],
-            sep: "-"
-          },
+            ]
+          }
+        },
+        editable: {
+          _regions: ["editable", "markupable"],
           justify: {
             justifyLeft: [
               "Align Left", null, {
@@ -481,8 +483,13 @@
     if ((_ref4 = (_base4 = $.fn).mercury) != null) {
     _ref4;
   } else {
-    _base4.mercury = function() {
-      return $(this).each(function() {
+    _base4.mercury = function(type) {
+      var $this;
+      $this = $(this);
+      if (type) {
+        $this.data('type', type);
+      }
+      return $this.each(function() {
         return window.mercuryInstance.buildRegion($(this));
       });
     };
@@ -609,7 +616,7 @@
         }
       } catch (error) {
         if (Mercury.debug) {
-          alert(error);
+          throw error;
         }
         return alert("Region type is malformed, no data-type provided, or \"" + type + "\" is unknown.");
       }
@@ -3082,18 +3089,18 @@
     child.__super__ = parent.prototype;
     return child;
   }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  this.Mercury.Regions.Editable = (function() {
+  this.Mercury.Regions.Simple = (function() {
     var type;
-    __extends(Editable, Mercury.Region);
-    type = 'editable';
-    function Editable(element, window, options) {
+    __extends(Simple, Mercury.Region);
+    type = 'simple';
+    function Simple(element, window, options) {
       this.element = element;
       this.window = window;
       this.options = options != null ? options : {};
-      this.type = 'editable';
-      Editable.__super__.constructor.apply(this, arguments);
+      this.type = 'simple';
+      Simple.__super__.constructor.apply(this, arguments);
     }
-    Editable.prototype.build = function() {
+    Simple.prototype.build = function() {
       var element, _i, _len, _ref;
       if (jQuery.browser.mozilla && this.content() === '') {
         this.content('&nbsp;');
@@ -3120,8 +3127,8 @@
         return this.document.mercuryEditing = true;
       }
     };
-    Editable.prototype.bindEvents = function() {
-      Editable.__super__.bindEvents.apply(this, arguments);
+    Simple.prototype.bindEvents = function() {
+      Simple.__super__.bindEvents.apply(this, arguments);
       Mercury.bind('region:update', __bind(function() {
         var anchor, currentElement, table;
         if (this.previewing) {
@@ -3148,35 +3155,6 @@
             return Mercury.tooltip.hide();
           }
         }
-      }, this));
-      this.element.bind('dragenter', __bind(function(event) {
-        if (event.preventDefault) {
-          event.preventDefault();
-        }
-        return event.originalEvent.dataTransfer.dropEffect = 'copy';
-      }, this));
-      this.element.bind('dragover', __bind(function(event) {
-        if (event.preventDefault) {
-          event.preventDefault();
-        }
-        return event.originalEvent.dataTransfer.dropEffect = 'copy';
-      }, this));
-      this.element.bind('drop', __bind(function(event) {
-        if (this.previewing) {
-          return;
-        }
-        clearTimeout(this.dropTimeout);
-        this.dropTimeout = setTimeout((__bind(function() {
-          return this.element.trigger('possible:drop');
-        }, this)), 1);
-        if (!event.originalEvent.dataTransfer.files.length) {
-          return;
-        }
-        if (event.preventDefault) {
-          event.preventDefault();
-        }
-        this.focus();
-        return Mercury.uploader(event.originalEvent.dataTransfer.files[0]);
       }, this));
       this.element.bind('paste', __bind(function() {
         var content;
@@ -3262,14 +3240,8 @@
             }
             return;
           case 13:
-            if (jQuery.browser.webkit && this.selection().commonAncestor().closest('li, ul', this.element).length === 0) {
-              event.preventDefault();
-              this.document.execCommand('insertLineBreak', false, null);
-            } else if (this.specialContainer) {
-              event.preventDefault();
-              this.document.execCommand('insertHTML', false, '<br/>');
-            }
-            break;
+            event.preventDefault();
+            return false;
           case 9:
             event.preventDefault();
             container = this.selection().commonAncestor();
@@ -3314,11 +3286,14 @@
         });
       }, this));
     };
-    Editable.prototype.focus = function() {
+    Simple.prototype.focus = function() {
       var selection;
       if (Mercury.region !== this) {
         this.element.focus();
-        selection = this.selection().selection.collapseToStart();
+        selection = this.selection().selection;
+        if (selection.type !== 'None') {
+          selection = this.selection().selection.collapseToStart();
+        }
       }
       Mercury.trigger('region:focused', {
         region: this
@@ -3327,7 +3302,7 @@
         region: this
       });
     };
-    Editable.prototype.content = function(value, filterSnippets, includeMarker) {
+    Simple.prototype.content = function(value, filterSnippets, includeMarker) {
       var container, content, element, index, selection, snippet, version, _i, _len, _len2, _ref, _ref2;
       if (value == null) {
         value = null;
@@ -3383,7 +3358,7 @@
             }
             element.html("[" + (element.data("snippet")) + "/" + (element.data("version")) + "]");
             element.attr({
-              contenteditable: null,
+              contentEditable: null,
               'data-version': null
             });
           }
@@ -3395,7 +3370,7 @@
         return content;
       }
     };
-    Editable.prototype.togglePreview = function() {
+    Simple.prototype.togglePreview = function() {
       if (this.previewing) {
         this.element.get(0).contentEditable = true;
         this.element.css({
@@ -3409,15 +3384,15 @@
         });
         this.element.blur();
       }
-      return Editable.__super__.togglePreview.apply(this, arguments);
+      return Simple.__super__.togglePreview.apply(this, arguments);
     };
-    Editable.prototype.execCommand = function(action, options) {
+    Simple.prototype.execCommand = function(action, options) {
       var handler, sibling;
       if (options == null) {
         options = {};
       }
-      Editable.__super__.execCommand.apply(this, arguments);
-      if (handler = Mercury.config.behaviors[action] || Mercury.Regions.Editable.actions[action]) {
+      Simple.__super__.execCommand.apply(this, arguments);
+      if (handler = Mercury.config.behaviors[action] || this.actions[action]) {
         return handler.call(this, this.selection(), options);
       } else {
         if (action === 'indent') {
@@ -3435,7 +3410,7 @@
         }
       }
     };
-    Editable.prototype.pushHistory = function(keyCode) {
+    Simple.prototype.pushHistory = function(keyCode) {
       var keyCodes, knownKeyCode, waitTime;
       keyCodes = [13, 46, 8];
       waitTime = 2.5;
@@ -3454,10 +3429,10 @@
       }
       return this.lastKnownKeyCode = knownKeyCode;
     };
-    Editable.prototype.selection = function() {
-      return new Mercury.Regions.Editable.Selection(this.window.getSelection(), this.document);
+    Simple.prototype.selection = function() {
+      return new this.Selection(this.window.getSelection(), this.document);
     };
-    Editable.prototype.path = function() {
+    Simple.prototype.path = function() {
       var container;
       container = this.selection().commonAncestor();
       if (!container) {
@@ -3469,7 +3444,7 @@
         return container.parentsUntil(this.element);
       }
     };
-    Editable.prototype.currentElement = function() {
+    Simple.prototype.currentElement = function() {
       var element, selection;
       element = [];
       selection = this.selection();
@@ -3481,7 +3456,7 @@
       }
       return element;
     };
-    Editable.prototype.handlePaste = function(prePasteContent) {
+    Simple.prototype.handlePaste = function(prePasteContent) {
       var cleaned, container, content, pasted;
       prePasteContent = prePasteContent.replace(/^\<br\>/, '');
       this.element.find('.mercury-region').remove();
@@ -3514,7 +3489,7 @@
         });
       }
     };
-    Editable.actions = {
+    Simple.prototype.actions = {
       insertRowBefore: function() {
         return Mercury.tableEditor.addRow('before');
       },
@@ -3609,163 +3584,288 @@
         });
       }
     };
-    return Editable;
-  })();
-  Mercury.Regions.Editable.Selection = (function() {
-    function Selection(selection, context) {
-      this.selection = selection;
-      this.context = context;
-      if (!(this.selection.rangeCount >= 1)) {
-        return;
-      }
-      this.range = this.selection.getRangeAt(0);
-      this.fragment = this.range.cloneContents();
-      this.clone = this.range.cloneRange();
-    }
-    Selection.prototype.commonAncestor = function(onlyTag) {
-      var ancestor;
-      if (onlyTag == null) {
-        onlyTag = false;
-      }
-      if (!this.range) {
-        return null;
-      }
-      ancestor = this.range.commonAncestorContainer;
-      if (ancestor.nodeType === 3 && onlyTag) {
-        ancestor = ancestor.parentNode;
-      }
-      return jQuery(ancestor);
-    };
-    Selection.prototype.wrap = function(element, replace) {
-      if (replace == null) {
-        replace = false;
-      }
-      element = jQuery(element, this.context).html(this.fragment);
-      if (replace) {
-        this.replace(element);
-      }
-      return element;
-    };
-    Selection.prototype.textContent = function() {
-      return this.range.cloneContents().textContent;
-    };
-    Selection.prototype.content = function() {
-      return this.range.cloneContents();
-    };
-    Selection.prototype.is = function(elementType) {
-      var content;
-      content = this.content();
-      if (content.childNodes.length === 1 && jQuery(content.firstChild).is(elementType)) {
-        return jQuery(content.firstChild);
-      }
-      return false;
-    };
-    Selection.prototype.forceSelection = function(element) {
-      var lastChild, range;
-      if (!jQuery.browser.webkit) {
-        return;
-      }
-      range = this.context.createRange();
-      if (this.range) {
-        if (this.commonAncestor(true).closest('.mercury-snippet').length) {
-          lastChild = this.context.createTextNode('\00');
-          element.appendChild(lastChild);
+    Simple.prototype.Selection = (function() {
+      function _Class(selection, context) {
+        this.selection = selection;
+        this.context = context;
+        if (!(this.selection.rangeCount >= 1)) {
+          return;
         }
-      } else {
-        if (element.lastChild && element.lastChild.nodeType === 3 && element.lastChild.textContent.replace(/^[\s+|\n+]|[\s+|\n+]$/, '') === '') {
-          lastChild = element.lastChild;
-          element.lastChild.textContent = '\00';
+        this.range = this.selection.getRangeAt(0);
+        this.fragment = this.range.cloneContents();
+        this.clone = this.range.cloneRange();
+      }
+      _Class.prototype.commonAncestor = function(onlyTag) {
+        var ancestor;
+        if (onlyTag == null) {
+          onlyTag = false;
+        }
+        if (!this.range) {
+          return null;
+        }
+        ancestor = this.range.commonAncestorContainer;
+        if (ancestor.nodeType === 3 && onlyTag) {
+          ancestor = ancestor.parentNode;
+        }
+        return jQuery(ancestor);
+      };
+      _Class.prototype.wrap = function(element, replace) {
+        if (replace == null) {
+          replace = false;
+        }
+        element = jQuery(element, this.context).html(this.fragment);
+        if (replace) {
+          this.replace(element);
+        }
+        return element;
+      };
+      _Class.prototype.textContent = function() {
+        return this.range.cloneContents().textContent;
+      };
+      _Class.prototype.content = function() {
+        return this.range.cloneContents();
+      };
+      _Class.prototype.is = function(elementType) {
+        var content;
+        content = this.content();
+        if (content.childNodes.length === 1 && jQuery(content.firstChild).is(elementType)) {
+          return jQuery(content.firstChild);
+        }
+        return false;
+      };
+      _Class.prototype.forceSelection = function(element) {
+        var lastChild, range;
+        if (!jQuery.browser.webkit) {
+          return;
+        }
+        range = this.context.createRange();
+        if (this.range) {
+          if (this.commonAncestor(true).closest('.mercury-snippet').length) {
+            lastChild = this.context.createTextNode('\00');
+            element.appendChild(lastChild);
+          }
         } else {
-          lastChild = this.context.createTextNode(' ');
-          element.appendChild(lastChild);
+          if (element.lastChild && element.lastChild.nodeType === 3 && element.lastChild.textContent.replace(/^[\s+|\n+]|[\s+|\n+]$/, '') === '') {
+            lastChild = element.lastChild;
+            element.lastChild.textContent = '\00';
+          } else {
+            lastChild = this.context.createTextNode(' ');
+            element.appendChild(lastChild);
+          }
         }
-      }
-      if (lastChild) {
-        range.setStartBefore(lastChild);
-        range.setEndBefore(lastChild);
-        return this.selection.addRange(range);
-      }
-    };
-    Selection.prototype.selectMarker = function(context) {
-      var markers, range;
-      markers = context.find('em.mercury-marker');
-      if (!markers.length) {
-        return;
-      }
-      range = this.context.createRange();
-      range.setStartBefore(markers.get(0));
-      if (markers.length >= 2) {
-        range.setEndBefore(markers.get(1));
-      }
-      markers.remove();
-      this.selection.removeAllRanges();
-      return this.selection.addRange(range);
-    };
-    Selection.prototype.placeMarker = function() {
-      var rangeEnd, rangeStart;
-      if (!this.range) {
-        return;
-      }
-      this.startMarker = jQuery('<em class="mercury-marker"/>', this.context).get(0);
-      this.endMarker = jQuery('<em class="mercury-marker"/>', this.context).get(0);
-      rangeEnd = this.range.cloneRange();
-      rangeEnd.collapse(false);
-      rangeEnd.insertNode(this.endMarker);
-      if (!this.range.collapsed) {
-        rangeStart = this.range.cloneRange();
-        rangeStart.collapse(true);
-        rangeStart.insertNode(this.startMarker);
-      }
-      this.selection.removeAllRanges();
-      return this.selection.addRange(this.range);
-    };
-    Selection.prototype.removeMarker = function() {
-      jQuery(this.startMarker).remove();
-      return jQuery(this.endMarker).remove();
-    };
-    Selection.prototype.insertTextNode = function(string) {
-      var node;
-      node = this.context.createTextNode(string);
-      this.range.extractContents();
-      this.range.insertNode(node);
-      this.range.selectNodeContents(node);
-      return this.selection.addRange(this.range);
-    };
-    Selection.prototype.insertNode = function(element) {
-      if (element.get) {
-        element = element.get(0);
-      }
-      if (jQuery.type(element) === 'string') {
-        element = jQuery(element, this.context).get(0);
-      }
-      this.range.deleteContents();
-      this.range.insertNode(element);
-      this.range.selectNodeContents(element);
-      return this.selection.addRange(this.range);
-    };
-    Selection.prototype.selectNode = function(node, removeExisting) {
-      if (removeExisting == null) {
-        removeExisting = false;
-      }
-      this.range.selectNode(node);
-      if (removeExisting) {
+        if (lastChild) {
+          range.setStartBefore(lastChild);
+          range.setEndBefore(lastChild);
+          return this.selection.addRange(range);
+        }
+      };
+      _Class.prototype.selectMarker = function(context) {
+        var markers, range;
+        markers = context.find('em.mercury-marker');
+        if (!markers.length) {
+          return;
+        }
+        range = this.context.createRange();
+        range.setStartBefore(markers.get(0));
+        if (markers.length >= 2) {
+          range.setEndBefore(markers.get(1));
+        }
+        markers.remove();
         this.selection.removeAllRanges();
-      }
-      return this.selection.addRange(this.range);
+        return this.selection.addRange(range);
+      };
+      _Class.prototype.placeMarker = function() {
+        var rangeEnd, rangeStart;
+        if (!this.range) {
+          return;
+        }
+        this.startMarker = jQuery('<em class="mercury-marker"/>', this.context).get(0);
+        this.endMarker = jQuery('<em class="mercury-marker"/>', this.context).get(0);
+        rangeEnd = this.range.cloneRange();
+        rangeEnd.collapse(false);
+        rangeEnd.insertNode(this.endMarker);
+        if (!this.range.collapsed) {
+          rangeStart = this.range.cloneRange();
+          rangeStart.collapse(true);
+          rangeStart.insertNode(this.startMarker);
+        }
+        this.selection.removeAllRanges();
+        return this.selection.addRange(this.range);
+      };
+      _Class.prototype.removeMarker = function() {
+        jQuery(this.startMarker).remove();
+        return jQuery(this.endMarker).remove();
+      };
+      _Class.prototype.insertTextNode = function(string) {
+        var node;
+        node = this.context.createTextNode(string);
+        this.range.extractContents();
+        this.range.insertNode(node);
+        this.range.selectNodeContents(node);
+        return this.selection.addRange(this.range);
+      };
+      _Class.prototype.insertNode = function(element) {
+        if (element.get) {
+          element = element.get(0);
+        }
+        if (jQuery.type(element) === 'string') {
+          element = jQuery(element, this.context).get(0);
+        }
+        this.range.deleteContents();
+        this.range.insertNode(element);
+        this.range.selectNodeContents(element);
+        return this.selection.addRange(this.range);
+      };
+      _Class.prototype.selectNode = function(node, removeExisting) {
+        if (removeExisting == null) {
+          removeExisting = false;
+        }
+        this.range.selectNode(node);
+        if (removeExisting) {
+          this.selection.removeAllRanges();
+        }
+        return this.selection.addRange(this.range);
+      };
+      _Class.prototype.replace = function(element) {
+        if (element.get) {
+          element = element.get(0);
+        }
+        if (jQuery.type(element) === 'string') {
+          element = jQuery(element, this.context).get(0);
+        }
+        this.range.deleteContents();
+        this.range.insertNode(element);
+        this.range.selectNodeContents(element);
+        return this.selection.addRange(this.range);
+      };
+      return _Class;
+    })();
+    return Simple;
+  })();
+}).call(this);
+(function() {
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
+    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor;
+    child.__super__ = parent.prototype;
+    return child;
+  }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  this.Mercury.Regions.Editable = (function() {
+    var type;
+    __extends(Editable, Mercury.Regions.Simple);
+    type = 'editable';
+    function Editable(element, window, options) {
+      this.element = element;
+      this.window = window;
+      this.options = options != null ? options : {};
+      Editable.__super__.constructor.apply(this, arguments);
+      this.type = 'editable';
+    }
+    Editable.prototype.bindEvents = function() {
+      Editable.__super__.bindEvents.apply(this, arguments);
+      this.element.bind('dragenter', __bind(function(event) {
+        if (event.preventDefault) {
+          event.preventDefault();
+        }
+        return event.originalEvent.dataTransfer.dropEffect = 'copy';
+      }, this));
+      this.element.bind('dragover', __bind(function(event) {
+        if (event.preventDefault) {
+          event.preventDefault();
+        }
+        return event.originalEvent.dataTransfer.dropEffect = 'copy';
+      }, this));
+      this.element.bind('drop', __bind(function(event) {
+        if (this.previewing) {
+          return;
+        }
+        clearTimeout(this.dropTimeout);
+        this.dropTimeout = setTimeout((__bind(function() {
+          return this.element.trigger('possible:drop');
+        }, this)), 1);
+        if (!event.originalEvent.dataTransfer.files.length) {
+          return;
+        }
+        if (event.preventDefault) {
+          event.preventDefault();
+        }
+        this.focus();
+        return Mercury.uploader(event.originalEvent.dataTransfer.files[0]);
+      }, this));
+      this.element.unbind('keydown').keydown(__bind(function(event) {
+        var container, handled;
+        if (this.previewing) {
+          return;
+        }
+        Mercury.changes = true;
+        switch (event.keyCode) {
+          case 90:
+            if (!event.metaKey) {
+              return;
+            }
+            event.preventDefault();
+            if (event.shiftKey) {
+              this.execCommand('redo');
+            } else {
+              this.execCommand('undo');
+            }
+            return;
+          case 13:
+            if (jQuery.browser.webkit && this.selection().commonAncestor().closest('li, ul', this.element).length === 0) {
+              event.preventDefault();
+              this.document.execCommand('insertLineBreak', false, null);
+            } else if (this.specialContainer) {
+              event.preventDefault();
+              this.document.execCommand('insertHTML', false, '<br/>');
+            }
+            break;
+          case 9:
+            event.preventDefault();
+            container = this.selection().commonAncestor();
+            handled = false;
+            if (container.closest('li', this.element).length) {
+              handled = true;
+              if (event.shiftKey) {
+                this.execCommand('outdent');
+              } else {
+                this.execCommand('indent');
+              }
+            }
+            if (!handled) {
+              this.execCommand('insertHTML', {
+                value: '&nbsp; '
+              });
+            }
+        }
+        if (event.metaKey) {
+          switch (event.keyCode) {
+            case 66:
+              this.execCommand('bold');
+              event.preventDefault();
+              break;
+            case 73:
+              this.execCommand('italic');
+              event.preventDefault();
+              break;
+            case 85:
+              this.execCommand('underline');
+              event.preventDefault();
+          }
+        }
+        return this.pushHistory(event.keyCode);
+      }, this));
+      return this.element.keyup(__bind(function() {
+        if (this.previewing) {
+          return;
+        }
+        return Mercury.trigger('region:update', {
+          region: this
+        });
+      }, this));
     };
-    Selection.prototype.replace = function(element) {
-      if (element.get) {
-        element = element.get(0);
-      }
-      if (jQuery.type(element) === 'string') {
-        element = jQuery(element, this.context).get(0);
-      }
-      this.range.deleteContents();
-      this.range.insertNode(element);
-      this.range.selectNodeContents(element);
-      return this.selection.addRange(this.range);
-    };
-    return Selection;
+    return Editable;
   })();
 }).call(this);
 (function() {
