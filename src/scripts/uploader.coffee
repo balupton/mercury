@@ -106,8 +106,8 @@ jQuery.extend Mercury.uploader, {
 						jQuery.parseJSON(event.target.responseText)
 				Mercury.trigger('action', {action: 'insertImage', value: {src: response.image.url}})
 			catch error
-				@updateStatus('Unable to process response')
-
+				@updateStatus('Unable to process response: '+error.toString())
+				
 		xhr.open('post', Mercury.config.uploading.url, true)
 		xhr.setRequestHeader('Accept', 'application/json, text/javascript, text/html, application/xml, text/xml, */*')
 		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
@@ -167,7 +167,7 @@ jQuery.extend Mercury.uploader, {
 
 		onerror: ->
 			@updateStatus('Error: Unable to upload the file')
-			@hide(1)
+			@hide(3)
 }
 
 

@@ -2929,7 +2929,7 @@
             }
           });
         } catch (error) {
-          return this.updateStatus('Unable to process response');
+          return this.updateStatus('Unable to process response: ' + error.toString());
         }
       }, this);
       xhr.open('post', Mercury.config.uploading.url, true);
