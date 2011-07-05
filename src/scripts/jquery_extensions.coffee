@@ -71,6 +71,9 @@ $.fn.outerHtml ?= ->
 	outerHtml = el.outerHTML or new XMLSerializer().serializeToString(el)
 	outerHtml
 
-$.fn.mercury ?= ->
-	$(this).each ->
+$.fn.mercury ?= (type) ->
+	$this = $(this)
+	if type
+		$this.data('type',type)
+	$this.each ->
 		window.mercuryInstance.buildRegion $(this)
