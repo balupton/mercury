@@ -3392,6 +3392,14 @@
         options = {};
       }
       Simple.__super__.execCommand.apply(this, arguments);
+      switch (action) {
+        case 'bold':
+        case 'italic':
+        case 'underline':
+          if (this.selection().fragment.textContent === '') {
+            false;
+          }
+      }
       if (handler = Mercury.config.behaviors[action] || this.actions[action]) {
         return handler.call(this, this.selection(), options);
       } else {

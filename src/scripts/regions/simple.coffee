@@ -228,7 +228,8 @@ class @Mercury.Regions.Simple extends Mercury.Region
 		switch action
 			when 'bold','italic','underline'
 				if @selection().fragment.textContent is ''
-					 # select the entire word
+					false # do nothing
+					# select the entire word
 		#debugger
 
 		# use a custom handler if there's one, otherwise use execCommand
