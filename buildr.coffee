@@ -35,6 +35,7 @@ config =
 		'scripts/snippet_toolbar.coffee'
 		'scripts/region.coffee'
 		'scripts/uploader.coffee'
+		'scripts/regions/simple.coffee'
 		'scripts/regions/editable.coffee'
 		'scripts/regions/markupable.coffee'
 		'scripts/regions/snippetable.coffee'

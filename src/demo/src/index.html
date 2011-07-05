@@ -5,6 +5,10 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /> 
 
 	<!-- Mercury -->
+	<script>
+		// Render scripts server-side with simple-server for easier debugging
+		window.debug = true;
+	</script>
 	<script type="text/coffeescript" src="mercury_dialogs.coffee"></script>
 	<script src="../../deps/jquery-1.6.1.js"></script>
 	<script src="../../deps/jquery-ui-1.8.13.custom.js"></script>
@@ -30,7 +34,7 @@
 		<li><a href="#" onclick="alert(Mercury.version)">Mercury Version</a></li>
 	</ul>
 
-	<h1>Editable region</h1>
+	<h1 class="mercury-region" data-type="simple">Editable region</h1>
 	<div id="editable1" class="mercury-region" data-type="editable">
 		If the first line of content isn't wrapped in an element you can't set justification (mozilla only bug).
 

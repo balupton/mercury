@@ -101,8 +101,8 @@ Mercury = window.Mercury = jQuery.extend(
 					sep3: " "
 					notesPanel: [ "Notes", "Page Notes", panel: "/mercury/panels/notes" ]
 				
-				editable: 
-					_regions: [ "editable", "markupable" ]
+				simple: 
+					_regions: [ "simple", "editable", "markupable" ]
 					predefined: 
 						style: [ "Style", null, 
 							select: "/mercury/selects/style"
@@ -120,14 +120,14 @@ Mercury = window.Mercury = jQuery.extend(
 							palette: "/mercury/palettes/backcolor"
 							context: true
 							preload: true
-							regions: [ "editable" ]
+							regions: [ "simple", "editable" ]
 						 ]
 						sep1: " "
 						foreColor: [ "Text Color", null, 
 							palette: "/mercury/palettes/forecolor"
 							context: true
 							preload: true
-							regions: [ "editable" ]
+							regions: [ "simple", "editable" ]
 						 ]
 						sep2: "-"
 					
@@ -136,23 +136,24 @@ Mercury = window.Mercury = jQuery.extend(
 						italic: [ "Italicize", null, context: true ]
 						overline: [ "Overline", null, 
 							context: true
-							regions: [ "editable" ]
+							regions: [ "simple", "editable" ]
 						 ]
 						strikethrough: [ "Strikethrough", null, 
 							context: true
-							regions: [ "editable" ]
+							regions: [ "simple", "editable" ]
 						 ]
 						underline: [ "Underline", null, 
 							context: true
-							regions: [ "editable" ]
+							regions: [ "simple", "editable" ]
 						 ]
 						sep: "-"
 					
 					script: 
 						subscript: [ "Subscript", null, context: true ]
 						superscript: [ "Superscript", null, context: true ]
-						sep: "-"
-					
+
+				editable: 
+					_regions: [ "editable", "markupable" ]
 					justify: 
 						justifyLeft: [ "Align Left", null, 
 							context: true

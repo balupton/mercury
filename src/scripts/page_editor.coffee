@@ -103,7 +103,7 @@ class @Mercury.PageEditor
 			else
 				@regions.push(new Mercury.Regions[type](region, window))
 		catch error
-			alert(error) if Mercury.debug
+			throw error if Mercury.debug
 			alert("Region type is malformed, no data-type provided, or \"#{type}\" is unknown.")
 
 

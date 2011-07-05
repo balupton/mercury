@@ -26,6 +26,7 @@ includes =
 		'snippet_toolbar.coffee'
 		'region.coffee'
 		'uploader.coffee'
+		'regions/simple.coffee'
 		'regions/editable.coffee'
 		'regions/markupable.coffee'
 		'regions/snippetable.coffee'
@@ -62,7 +63,9 @@ beforeEl = mercuryEl
 loadScriptIndex = 0
 loadScript = (next) ->
 	# Prepare
-	scriptSrc = mercuryBase + 'scripts/' + includes.scripts[loadScriptIndex]# + '?js'
+	scriptSrc = mercuryBase + 'scripts/' + includes.scripts[loadScriptIndex]
+	if window.debug?
+		scriptSrc += '?js'
 	scriptLoaded = ->
 		if this.readyState? and this.readyState isnt 'complete'
 			return
@@ -98,6 +101,8 @@ loadStyleIndex = 0
 loadStyle = (next) ->
 	# Prepare
 	styleHref = mercuryBase + 'styles/' + includes.styles[loadStyleIndex]
+	if window.debug?
+		styleHref += '?css'
 	styleLoaded = ->
 		++loadStyleIndex
 		loadStyle(next)
