@@ -10,6 +10,9 @@ class @Mercury.Regions.Simple extends Mercury.Region
 		# mozilla: set some initial content so everything works correctly
 		@content('&nbsp;') if jQuery.browser.mozilla && @content() == ''
 
+		# Clean text nodes
+		# @element.html(@element.html().replace(/\s\s+/g,' '))
+
 		# set overflow just in case
 		@element.data({originalOverflow: @element.css('overflow')})
 		@element.css({overflow: 'auto'})
@@ -220,6 +223,13 @@ class @Mercury.Regions.Simple extends Mercury.Region
 
 	execCommand: (action, options = {}) ->
 		super
+
+		#console.log 'exec: ',action, @selection()
+		switch action
+			when 'bold','italic','underline'
+				if @selection().fragment.textContent is ''
+					 # select the entire word
+		#debugger
 
 		# use a custom handler if there's one, otherwise use execCommand
 		if handler = Mercury.config.behaviors[action] || @actions[action]
