@@ -3000,7 +3000,7 @@
       },
       onerror: function() {
         this.updateStatus('Error: Unable to upload the file');
-        return this.hide(1);
+        return this.hide(3);
       }
     }
   });
