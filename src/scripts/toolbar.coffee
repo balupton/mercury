@@ -30,7 +30,7 @@ class @Mercury.Toolbar
 
 
 	buildButton: (name, options) ->
-		return false if name[0] == '_'
+		return false if name[0] == '_' or !options
 		switch jQuery.type(options)
 			when 'array' # button
 				[title, summary, handled] = options

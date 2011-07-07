@@ -1885,7 +1885,7 @@
     };
     Toolbar.prototype.buildButton = function(name, options) {
       var action, button, group, handled, opts, summary, title;
-      if (name[0] === '_') {
+      if (name[0] === '_' || !options) {
         return false;
       }
       switch (jQuery.type(options)) {
