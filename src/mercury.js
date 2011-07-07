@@ -42,25 +42,25 @@
           insertLink: [
             "Link", "Insert Link", {
               modal: "/mercury/modals/link",
-              regions: ["editable", "markupable"]
+              regions: ["rich", "markupable"]
             }
           ],
           insertMedia: [
             "Media", "Insert Media (images and videos)", {
               modal: "/mercury/modals/media",
-              regions: ["editable", "markupable"]
+              regions: ["rich", "markupable"]
             }
           ],
           insertTable: [
             "Table", "Insert Table", {
               modal: "/mercury/modals/table",
-              regions: ["editable", "markupable"]
+              regions: ["rich", "markupable"]
             }
           ],
           insertCharacter: [
             "Character", "Special Characters", {
               modal: "/mercury/modals/character",
-              regions: ["editable", "markupable"]
+              regions: ["rich", "markupable"]
             }
           ],
           snippetPanel: [
@@ -82,7 +82,7 @@
           ]
         },
         simple: {
-          _regions: ["simple", "editable", "markupable"],
+          _regions: ["basic", "rich", "markupable"],
           predefined: {
             style: [
               "Style", null, {
@@ -105,7 +105,7 @@
                 palette: "/mercury/palettes/backcolor",
                 context: true,
                 preload: true,
-                regions: ["simple", "editable"]
+                regions: ["basic", "rich"]
               }
             ],
             sep1: " ",
@@ -114,7 +114,7 @@
                 palette: "/mercury/palettes/forecolor",
                 context: true,
                 preload: true,
-                regions: ["simple", "editable"]
+                regions: ["basic", "rich"]
               }
             ],
             sep2: "-"
@@ -133,19 +133,19 @@
             overline: [
               "Overline", null, {
                 context: true,
-                regions: ["simple", "editable"]
+                regions: ["basic", "rich"]
               }
             ],
             strikethrough: [
               "Strikethrough", null, {
                 context: true,
-                regions: ["simple", "editable"]
+                regions: ["basic", "rich"]
               }
             ],
             underline: [
               "Underline", null, {
                 context: true,
-                regions: ["simple", "editable"]
+                regions: ["basic", "rich"]
               }
             ],
             sep: "-"
@@ -164,30 +164,30 @@
           }
         },
         editable: {
-          _regions: ["editable", "markupable"],
+          _regions: ["rich", "markupable"],
           justify: {
             justifyLeft: [
               "Align Left", null, {
                 context: true,
-                regions: ["editable"]
+                regions: ["rich"]
               }
             ],
             justifyCenter: [
               "Center", null, {
                 context: true,
-                regions: ["editable"]
+                regions: ["rich"]
               }
             ],
             justifyRight: [
               "Align Right", null, {
                 context: true,
-                regions: ["editable"]
+                regions: ["rich"]
               }
             ],
             justifyFull: [
               "Justify Full", null, {
                 context: true,
-                regions: ["editable"]
+                regions: ["rich"]
               }
             ],
             sep: "-"
@@ -214,32 +214,32 @@
             _context: true,
             insertRowBefore: [
               "Insert Table Row", "Insert a table row before the cursor", {
-                regions: ["editable"]
+                regions: ["rich"]
               }
             ],
             insertRowAfter: [
               "Insert Table Row", "Insert a table row after the cursor", {
-                regions: ["editable"]
+                regions: ["rich"]
               }
             ],
             deleteRow: [
               "Delete Table Row", "Delete this table row", {
-                regions: ["editable"]
+                regions: ["rich"]
               }
             ],
             insertColumnBefore: [
               "Insert Table Column", "Insert a table column before the cursor", {
-                regions: ["editable"]
+                regions: ["rich"]
               }
             ],
             insertColumnAfter: [
               "Insert Table Column", "Insert a table column after the cursor", {
-                regions: ["editable"]
+                regions: ["rich"]
               }
             ],
             deleteColumn: [
               "Delete Table Column", "Delete this table column", {
-                regions: ["editable"]
+                regions: ["rich"]
               }
             ],
             sep1: " ",
@@ -256,7 +256,7 @@
           formatting: {
             removeFormatting: [
               "Remove Formatting", "Remove formatting for the selection", {
-                regions: ["editable"]
+                regions: ["rich"]
               }
             ],
             sep2: " "
@@ -264,7 +264,7 @@
           editors: {
             htmlEditor: [
               "Edit HTML", "Edit the HTML content", {
-                regions: ["editable"]
+                regions: ["rich"]
               }
             ]
           }
@@ -608,7 +608,7 @@
     PageEditor.prototype.buildRegion = function(region) {
       var type;
       try {
-        type = (region.data('type') || 'editable').titleize();
+        type = (region.data('type') || 'rich').titleize();
         if (this.iframe) {
           return this.regions.push(new Mercury.Regions[type](region, this.iframe.get(0).contentWindow));
         } else {
@@ -3089,18 +3089,18 @@
     child.__super__ = parent.prototype;
     return child;
   }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  this.Mercury.Regions.Simple = (function() {
+  this.Mercury.Regions.Basic = (function() {
     var type;
-    __extends(Simple, Mercury.Region);
-    type = 'simple';
-    function Simple(element, window, options) {
+    __extends(Basic, Mercury.Region);
+    type = 'basic';
+    function Basic(element, window, options) {
       this.element = element;
       this.window = window;
       this.options = options != null ? options : {};
-      this.type = 'simple';
-      Simple.__super__.constructor.apply(this, arguments);
+      Basic.__super__.constructor.apply(this, arguments);
+      this.type = 'basic';
     }
-    Simple.prototype.build = function() {
+    Basic.prototype.build = function() {
       var element, _i, _len, _ref;
       if (jQuery.browser.mozilla && this.content() === '') {
         this.content('&nbsp;');
@@ -3121,14 +3121,14 @@
       }
       if (!this.document.mercuryEditing) {
         this.document.execCommand('styleWithCSS', false, false);
-        this.document.execCommand('insertBROnReturn', false, true);
+        this.document.execCommand('insertBROnReturn', false, false);
         this.document.execCommand('enableInlineTableEditing', false, false);
-        this.document.execCommand('enableObjectResizing', false, true);
+        this.document.execCommand('enableObjectResizing', false, false);
         return this.document.mercuryEditing = true;
       }
     };
-    Simple.prototype.bindEvents = function() {
-      Simple.__super__.bindEvents.apply(this, arguments);
+    Basic.prototype.bindEvents = function() {
+      Basic.__super__.bindEvents.apply(this, arguments);
       Mercury.bind('region:update', __bind(function() {
         var anchor, currentElement, table;
         if (this.previewing) {
@@ -3286,7 +3286,7 @@
         });
       }, this));
     };
-    Simple.prototype.focus = function() {
+    Basic.prototype.focus = function() {
       var selection;
       if (Mercury.region !== this) {
         this.element.focus();
@@ -3302,7 +3302,7 @@
         region: this
       });
     };
-    Simple.prototype.content = function(value, filterSnippets, includeMarker) {
+    Basic.prototype.content = function(value, filterSnippets, includeMarker) {
       var container, content, element, index, selection, snippet, version, _i, _len, _len2, _ref, _ref2;
       if (value == null) {
         value = null;
@@ -3370,7 +3370,7 @@
         return content;
       }
     };
-    Simple.prototype.togglePreview = function() {
+    Basic.prototype.togglePreview = function() {
       if (this.previewing) {
         this.element.get(0).contentEditable = true;
         this.element.css({
@@ -3384,14 +3384,14 @@
         });
         this.element.blur();
       }
-      return Simple.__super__.togglePreview.apply(this, arguments);
+      return Basic.__super__.togglePreview.apply(this, arguments);
     };
-    Simple.prototype.execCommand = function(action, options) {
+    Basic.prototype.execCommand = function(action, options) {
       var handler, sibling;
       if (options == null) {
         options = {};
       }
-      Simple.__super__.execCommand.apply(this, arguments);
+      Basic.__super__.execCommand.apply(this, arguments);
       switch (action) {
         case 'bold':
         case 'italic':
@@ -3418,7 +3418,7 @@
         }
       }
     };
-    Simple.prototype.pushHistory = function(keyCode) {
+    Basic.prototype.pushHistory = function(keyCode) {
       var keyCodes, knownKeyCode, waitTime;
       keyCodes = [13, 46, 8];
       waitTime = 2.5;
@@ -3437,10 +3437,10 @@
       }
       return this.lastKnownKeyCode = knownKeyCode;
     };
-    Simple.prototype.selection = function() {
+    Basic.prototype.selection = function() {
       return new this.Selection(this.window.getSelection(), this.document);
     };
-    Simple.prototype.path = function() {
+    Basic.prototype.path = function() {
       var container;
       container = this.selection().commonAncestor();
       if (!container) {
@@ -3452,7 +3452,7 @@
         return container.parentsUntil(this.element);
       }
     };
-    Simple.prototype.currentElement = function() {
+    Basic.prototype.currentElement = function() {
       var element, selection;
       element = [];
       selection = this.selection();
@@ -3464,7 +3464,7 @@
       }
       return element;
     };
-    Simple.prototype.handlePaste = function(prePasteContent) {
+    Basic.prototype.handlePaste = function(prePasteContent) {
       var cleaned, container, content, pasted;
       prePasteContent = prePasteContent.replace(/^\<br\>/, '');
       this.element.find('.mercury-region').remove();
@@ -3497,7 +3497,7 @@
         });
       }
     };
-    Simple.prototype.actions = {
+    Basic.prototype.actions = {
       insertRowBefore: function() {
         return Mercury.tableEditor.addRow('before');
       },
@@ -3592,7 +3592,7 @@
         });
       }
     };
-    Simple.prototype.Selection = (function() {
+    Basic.prototype.Selection = (function() {
       function _Class(selection, context) {
         this.selection = selection;
         this.context = context;
@@ -3748,7 +3748,7 @@
       };
       return _Class;
     })();
-    return Simple;
+    return Basic;
   })();
 }).call(this);
 (function() {
@@ -3759,20 +3759,97 @@
     child.prototype = new ctor;
     child.__super__ = parent.prototype;
     return child;
-  }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  this.Mercury.Regions.Editable = (function() {
+  };
+  this.Mercury.Regions.Plain = (function() {
     var type;
-    __extends(Editable, Mercury.Regions.Simple);
-    type = 'editable';
-    function Editable(element, window, options) {
+    __extends(Plain, this.Mercury.Regions.Basic);
+    type = 'plain';
+    function Plain(element, window, options) {
       this.element = element;
       this.window = window;
       this.options = options != null ? options : {};
-      Editable.__super__.constructor.apply(this, arguments);
-      this.type = 'editable';
+      Plain.__super__.constructor.apply(this, arguments);
+      this.type = 'plain';
     }
-    Editable.prototype.bindEvents = function() {
-      Editable.__super__.bindEvents.apply(this, arguments);
+    Plain.prototype.execCommand = function(action, options) {
+      var handler, sibling;
+      if (options == null) {
+        options = {};
+      }
+      console.log(action);
+      if (action !== 'redo' && action !== 'undo' && action !== 'insertHTML') {
+        return false;
+      }
+      if (handler = Mercury.config.behaviors[action] || this.actions[action]) {
+        return handler.call(this, this.selection(), options);
+      } else {
+        if (action === 'indent') {
+          sibling = this.element.get(0).previousSibling;
+        }
+        if (action === 'insertHTML' && options.value && options.value.get) {
+          options.value = jQuery('<div>').html(options.value).html();
+        }
+        try {
+          return this.document.execCommand(action, false, options.value);
+        } catch (error) {
+          if (action === 'indent' && this.element.prev() !== sibling) {
+            return this.element.prev().remove();
+          }
+        }
+      }
+    };
+    Plain.prototype.handlePaste = function(prePasteContent) {
+      var container, content, pasted;
+      prePasteContent = prePasteContent.replace(/^\<br\>/, '');
+      this.element.find('.mercury-region').remove();
+      content = this.content();
+      pasted = prePasteContent.singleDiff(this.content());
+      container = jQuery('<div>').appendTo(this.document.createDocumentFragment()).html(pasted);
+      container.find('[style]').attr({
+        style: null
+      });
+      this.document.execCommand('undo', false, null);
+      return this.execCommand('insertHTML', {
+        value: container.text()
+      });
+    };
+    Plain.prototype.actions = {
+      undo: function() {
+        return this.content(this.history.undo());
+      },
+      redo: function() {
+        return this.content(this.history.redo());
+      }
+    };
+    return Plain;
+  }).call(this);
+}).call(this);
+(function() {
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
+    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor;
+    child.__super__ = parent.prototype;
+    return child;
+  }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  this.Mercury.Regions.Rich = (function() {
+    var type;
+    __extends(Rich, Mercury.Regions.Basic);
+    type = 'rich';
+    function Rich(element, window, options) {
+      this.element = element;
+      this.window = window;
+      this.options = options != null ? options : {};
+      Rich.__super__.constructor.apply(this, arguments);
+      this.type = 'rich';
+      if (!this.document.mercuryEditing) {
+        this.document.execCommand('insertBROnReturn', false, true);
+        this.document.execCommand('enableObjectResizing', false, true);
+      }
+    }
+    Rich.prototype.bindEvents = function() {
+      Rich.__super__.bindEvents.apply(this, arguments);
       this.element.bind('dragenter', __bind(function(event) {
         if (event.preventDefault) {
           event.preventDefault();
@@ -3873,7 +3950,7 @@
         });
       }, this));
     };
-    return Editable;
+    return Rich;
   })();
 }).call(this);
 (function() {
@@ -3893,8 +3970,8 @@
       this.element = element;
       this.window = window;
       this.options = options != null ? options : {};
-      this.type = 'markupable';
       Markupable.__super__.constructor.apply(this, arguments);
+      this.type = 'markupable';
       this.converter = new Showdown.converter();
     }
     Markupable.prototype.build = function() {
@@ -4421,8 +4498,8 @@
       this.element = element;
       this.window = window;
       this.options = options != null ? options : {};
-      this.type = 'snippetable';
       Snippetable.__super__.constructor.apply(this, arguments);
+      this.type = 'snippetable';
       this.makeSortable();
     }
     Snippetable.prototype.build = function() {

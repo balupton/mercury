@@ -1,9 +1,9 @@
-class @Mercury.Regions.Simple extends Mercury.Region
-	type = 'simple'
+class @Mercury.Regions.Basic extends Mercury.Region
+	type = 'basic'
 
 	constructor: (@element, @window, @options = {}) ->
-		@type = 'simple'
 		super
+		@type = 'basic'
 
 
 	build: ->
@@ -32,9 +32,9 @@ class @Mercury.Regions.Simple extends Mercury.Region
 		# add the basic editor settings to the document (only once)
 		unless @document.mercuryEditing
 			@document.execCommand('styleWithCSS', false, false)
-			@document.execCommand('insertBROnReturn', false, true)
+			@document.execCommand('insertBROnReturn', false, false)
 			@document.execCommand('enableInlineTableEditing', false, false)
-			@document.execCommand('enableObjectResizing', false, true)
+			@document.execCommand('enableObjectResizing', false, false)
 			# ^ mozilla is the only browser which supports this (image drag to resize)
 			@document.mercuryEditing = true
 

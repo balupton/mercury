@@ -81,19 +81,19 @@ Mercury = window.Mercury = jQuery.extend(
 					
 					insertLink: [ "Link", "Insert Link", 
 						modal: "/mercury/modals/link"
-						regions: [ "editable", "markupable" ]
+						regions: [ "rich", "markupable" ]
 					 ]
 					insertMedia: [ "Media", "Insert Media (images and videos)", 
 						modal: "/mercury/modals/media"
-						regions: [ "editable", "markupable" ]
+						regions: [ "rich", "markupable" ]
 					 ]
 					insertTable: [ "Table", "Insert Table", 
 						modal: "/mercury/modals/table"
-						regions: [ "editable", "markupable" ]
+						regions: [ "rich", "markupable" ]
 					 ]
 					insertCharacter: [ "Character", "Special Characters", 
 						modal: "/mercury/modals/character"
-						regions: [ "editable", "markupable" ]
+						regions: [ "rich", "markupable" ]
 					 ]
 					snippetPanel: [ "Snippet", "Snippet Panel", panel: "/mercury/panels/snippets" ]
 					sep2: " "
@@ -102,7 +102,7 @@ Mercury = window.Mercury = jQuery.extend(
 					notesPanel: [ "Notes", "Page Notes", panel: "/mercury/panels/notes" ]
 				
 				simple: 
-					_regions: [ "simple", "editable", "markupable" ]
+					_regions: [ "basic", "rich", "markupable" ]
 					predefined: 
 						style: [ "Style", null, 
 							select: "/mercury/selects/style"
@@ -120,14 +120,14 @@ Mercury = window.Mercury = jQuery.extend(
 							palette: "/mercury/palettes/backcolor"
 							context: true
 							preload: true
-							regions: [ "simple", "editable" ]
+							regions: [ "basic", "rich" ]
 						 ]
 						sep1: " "
 						foreColor: [ "Text Color", null, 
 							palette: "/mercury/palettes/forecolor"
 							context: true
 							preload: true
-							regions: [ "simple", "editable" ]
+							regions: [ "basic", "rich" ]
 						 ]
 						sep2: "-"
 					
@@ -136,15 +136,15 @@ Mercury = window.Mercury = jQuery.extend(
 						italic: [ "Italicize", null, context: true ]
 						overline: [ "Overline", null, 
 							context: true
-							regions: [ "simple", "editable" ]
+							regions: [ "basic", "rich" ]
 						 ]
 						strikethrough: [ "Strikethrough", null, 
 							context: true
-							regions: [ "simple", "editable" ]
+							regions: [ "basic", "rich" ]
 						 ]
 						underline: [ "Underline", null, 
 							context: true
-							regions: [ "simple", "editable" ]
+							regions: [ "basic", "rich" ]
 						 ]
 						sep: "-"
 					
@@ -153,23 +153,23 @@ Mercury = window.Mercury = jQuery.extend(
 						superscript: [ "Superscript", null, context: true ]
 
 				editable: 
-					_regions: [ "editable", "markupable" ]
+					_regions: [ "rich", "markupable" ]
 					justify: 
 						justifyLeft: [ "Align Left", null, 
 							context: true
-							regions: [ "editable" ]
+							regions: [ "rich" ]
 						 ]
 						justifyCenter: [ "Center", null, 
 							context: true
-							regions: [ "editable" ]
+							regions: [ "rich" ]
 						 ]
 						justifyRight: [ "Align Right", null, 
 							context: true
-							regions: [ "editable" ]
+							regions: [ "rich" ]
 						 ]
 						justifyFull: [ "Justify Full", null, 
 							context: true
-							regions: [ "editable" ]
+							regions: [ "rich" ]
 						 ]
 						sep: "-"
 					
@@ -185,12 +185,12 @@ Mercury = window.Mercury = jQuery.extend(
 					
 					table: 
 						_context: true
-						insertRowBefore: [ "Insert Table Row", "Insert a table row before the cursor", regions: [ "editable" ] ]
-						insertRowAfter: [ "Insert Table Row", "Insert a table row after the cursor", regions: [ "editable" ] ]
-						deleteRow: [ "Delete Table Row", "Delete this table row", regions: [ "editable" ] ]
-						insertColumnBefore: [ "Insert Table Column", "Insert a table column before the cursor", regions: [ "editable" ] ]
-						insertColumnAfter: [ "Insert Table Column", "Insert a table column after the cursor", regions: [ "editable" ] ]
-						deleteColumn: [ "Delete Table Column", "Delete this table column", regions: [ "editable" ] ]
+						insertRowBefore: [ "Insert Table Row", "Insert a table row before the cursor", regions: [ "rich" ] ]
+						insertRowAfter: [ "Insert Table Row", "Insert a table row after the cursor", regions: [ "rich" ] ]
+						deleteRow: [ "Delete Table Row", "Delete this table row", regions: [ "rich" ] ]
+						insertColumnBefore: [ "Insert Table Column", "Insert a table column before the cursor", regions: [ "rich" ] ]
+						insertColumnAfter: [ "Insert Table Column", "Insert a table column after the cursor", regions: [ "rich" ] ]
+						deleteColumn: [ "Delete Table Column", "Delete this table column", regions: [ "rich" ] ]
 						sep1: " "
 						increaseColspan: [ "Increase Cell Columns", "Increase the cells colspan" ]
 						decreaseColspan: [ "Decrease Cell Columns", "Decrease the cells colspan and add a new cell" ]
@@ -203,10 +203,10 @@ Mercury = window.Mercury = jQuery.extend(
 						sep1: "-"
 					
 					formatting: 
-						removeFormatting: [ "Remove Formatting", "Remove formatting for the selection", regions: [ "editable" ] ]
+						removeFormatting: [ "Remove Formatting", "Remove formatting for the selection", regions: [ "rich" ] ]
 						sep2: " "
 					
-					editors: htmlEditor: [ "Edit HTML", "Edit the HTML content", regions: [ "editable" ] ]
+					editors: htmlEditor: [ "Edit HTML", "Edit the HTML content", regions: [ "rich" ] ]
 				
 				snippetable: 
 					_custom: true

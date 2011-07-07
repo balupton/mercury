@@ -1,9 +1,13 @@
-class @Mercury.Regions.Editable extends Mercury.Regions.Simple
-	type = 'editable'
+class @Mercury.Regions.Rich extends Mercury.Regions.Basic
+	type = 'rich'
 
 	constructor: (@element, @window, @options = {}) ->
 		super
-		@type = 'editable'
+		@type = 'rich'
+
+		unless @document.mercuryEditing
+			@document.execCommand('insertBROnReturn', false, true)
+			@document.execCommand('enableObjectResizing', false, true)
 
 	bindEvents: ->
 		super

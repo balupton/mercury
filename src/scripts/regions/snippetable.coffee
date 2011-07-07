@@ -2,8 +2,8 @@ class @Mercury.Regions.Snippetable extends Mercury.Region
 	type = 'snippetable'
 
 	constructor: (@element, @window, @options = {}) ->
-		@type = 'snippetable'
 		super
+		@type = 'snippetable'
 		@makeSortable()
 
 

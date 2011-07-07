@@ -97,7 +97,7 @@ class @Mercury.PageEditor
 
 	buildRegion: (region) ->
 		try
-			type = (region.data('type') or 'editable').titleize()
+			type = (region.data('type') or 'rich').titleize()
 			if @iframe
 				@regions.push(new Mercury.Regions[type](region, @iframe.get(0).contentWindow))
 			else
