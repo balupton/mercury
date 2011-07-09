@@ -42,7 +42,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #= require_tree ./regions
 #= require_tree ./dialogs
 #= require_tree ./modals
-''
+
+
 # iFrame / no-iFrame handle
 if window.top.Mercury? and window.top.Mercury.loaded?
 	window.mercuryWindow = window.top
