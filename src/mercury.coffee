@@ -1,6 +1,20 @@
-# Check
+# Cancel if inside the Mercury iFrame
 if window.top.Mercury? and window.top.Mercury.loaded?
 	return
+
+# Prepare
+mercuryEl = document.getElementById('mercury-include')
+mercuryBaseUrl = mercuryEl.src.replace(/\?.*$/,'').replace(/mercury\.(js|coffee)$/, '').replace(/\/+$/, '')+'/'
+
+# Load in with Buildr
+mercuryBuildr = new window.Buildr {
+	baseUrl: mercuryBaseUrl
+	beforeEl: mercuryEl
+	serverCompilation: window.serverCompilation or false
+	scripts: scripts
+	styles: styles
+}
+mercuryBuildr.load()
 
 # Includes
 includes =
@@ -56,84 +70,115 @@ includes =
 		'uploader.less'
 	]
 
-# Prepare
-appendEl = document.head or document.getElementsByTagName('head')[0]
-mercuryEl = document.getElementById('mercury-include')
-mercuryBase = mercuryEl.src.replace(/\?.*$/,'').replace(/mercury\.(js|coffee)$/, '').replace(/\/+$/, '')+'/'
-beforeEl = mercuryEl
 
-# Script Loader
-loadScriptIndex = 0
-loadScript = (next) ->
-	# Prepare
-	scriptSrc = mercuryBase + 'scripts/' + includes.scripts[loadScriptIndex]
-	if window.serverCompilation?
-		scriptSrc += '?js'
-	scriptLoaded = ->
-		if this.readyState? and this.readyState isnt 'complete'
-			return
-		if this.src? and this.src isnt scriptSrc
-			return
-		++loadScriptIndex
-		loadScript(next)
+# Buildr
+window.Buildr = class
+	# Options
+	scripts: null
+	styles: null
+	appendUrl: null
+	baseUrl: null
+	beforeEl: null
+	serverCompilation: null
 
-	# Exists
-	if includes.scripts[loadScriptIndex]?
-		scriptEl = document.createElement('script')
-		scriptEl.src = scriptSrc
-		if /\.coffee$/.test(scriptSrc)
-			scriptEl.type = 'text/coffeescript'
+	# Construct a new Buildr instance
+	constructor: ({scripts,styles,appendUrl,baseUrl,beforeEl,serverCompilation}) ->
+		@scripts = scripts or []
+		@styles = styles or []
+		@appendUrl = appendUrl or document.head or document.getElementsByTagName('head')[0]
+		@baseUrl = baseUrl or @getRootUrl()
+		@beforeEl = beforeEl or document.head.lastChild
+		@serverCompilation = serverCompilation or false
+
+	# Get the root url of our page
+	getRootUrl: ->
+		# Prepare
+		host = (document.location.hostname||document.location.host)
+		protocol = document.location.protocol
+		rootUrl = "#{protocol}//#{host}"
+		
+		# Port	
+		if document.location.port
+			rootUrl += ':'+document.location.port
+		rootUrl += '/'
+
+		# Return
+		rootUrl
+	
+	# Load Styles and Scripts
+	load: (next) ->
+		loadStyle ->
+			loadScript ->
+				next() if next
+	
+	# Script Loader
+	loadScriptIndex: 0
+	loadScript: (next) ->
+		# Prepare
+		me = @
+		scriptSrc = mercuryBase + 'scripts/' + includes.scripts[loadScriptIndex]
+		scriptSrc += '?js' if @serverCompilation?
+		scriptLoaded = ->
+			if this.readyState? and this.readyState isnt 'complete'
+				return
+			if this.src? and this.src isnt scriptSrc
+				return
+			++loadScriptIndex
+			me.loadScript next
+
+		# Exists
+		if includes.scripts[loadScriptIndex]?
+			scriptEl = document.createElement('script')
+			scriptEl.src = scriptSrc
+			if /\.coffee$/.test(scriptSrc)
+				scriptEl.type = 'text/coffeescript'
+			else
+				scriptEl.onreadystatechange = scriptLoaded
+				scriptEl.onload = scriptLoaded
+				scriptEl.onerror = scriptLoaded
+			appendEl.appendChild scriptEl, beforeEl.nextSibling
+			beforeEl = scriptEl
+			if /\.coffee$/.test(scriptSrc)
+				scriptLoaded()
+
+		# Completed
 		else
-			scriptEl.onreadystatechange = scriptLoaded
-			scriptEl.onload = scriptLoaded
-			scriptEl.onerror = scriptLoaded
-		appendEl.appendChild(scriptEl,beforeEl.nextSibling)
-		beforeEl = scriptEl
-		if /\.coffee$/.test(scriptSrc)
-			scriptLoaded()
+			next()
 
-	# Completed
-	else
-		next()
+		# Return
+		true
 
-	# Return
-	true
+	# Style Loader
+	loadStyleIndex: 0
+	loadStyle: (next) ->
+		# Prepare
+		me = @
+		styleHref = mercuryBase + 'styles/' + includes.styles[loadStyleIndex]
+		styleHref += '?css' if @serverCompilation?
+		styleLoaded = ->
+			++loadStyleIndex
+			me.loadStyle next
 
-# Style Loader
-loadStyleIndex = 0
-loadStyle = (next) ->
-	# Prepare
-	styleHref = mercuryBase + 'styles/' + includes.styles[loadStyleIndex]
-	if window.serverCompilation?
-		styleHref += '?css'
-	styleLoaded = ->
-		++loadStyleIndex
-		loadStyle(next)
+		# Exists
+		if includes.styles[loadStyleIndex]?
+			styleEl = document.createElement('link')
+			styleEl.href = styleHref
+			styleEl.media = 'screen'
+			if /\.less$/.test(styleHref)
+				styleEl.rel = 'stylesheet/less'
+			else
+				styleEl.rel = 'stylesheet'
+			styleEl.type = 'text/css'
+			#styleEl.onreadystatechange = styleLoaded
+			#styleEl.onload = styleLoaded
+			#styleEl.onerror = styleLoaded
+			appendEl.insertBefore styleEl, beforeEl.nextSibling
+			beforeEl = styleEl
+			styleLoaded()
 
-	# Exists
-	if includes.styles[loadStyleIndex]?
-		styleEl = document.createElement('link')
-		styleEl.href = styleHref
-		styleEl.media = 'screen'
-		if /\.less$/.test(styleHref)
-			styleEl.rel = 'stylesheet/less'
+		# Completed
 		else
-			styleEl.rel = 'stylesheet'
-		styleEl.type = 'text/css'
-		#styleEl.onreadystatechange = styleLoaded
-		#styleEl.onload = styleLoaded
-		#styleEl.onerror = styleLoaded
-		appendEl.insertBefore(styleEl,beforeEl.nextSibling)
-		beforeEl = styleEl
-		styleLoaded()
+			next()
 
-	# Completed
-	else
-		next()
-
-	# Return
-	true
-
-# Load
-loadStyle ->
-	loadScript ->
+		# Return
+		true

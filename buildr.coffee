@@ -5,9 +5,29 @@ buildr = require 'buildr'
 config = 
 	srcPath: __dirname+'/src'
 	outPath: __dirname+'/src'
+	compress: true
 	outStylePath: __dirname+'/src/mercury.css'
 	outScriptPath: __dirname+'/src/mercury.js'
-	compress: true
+	srcLoaderPath: __dirname+'/src/dev.js'
+	srcLoaderHeader: '''
+		# Cancel if inside the Mercury iFrame
+		if window.top.Mercury? and window.top.Mercury.loaded?
+			return
+
+		# Prepare
+		mercuryEl = document.getElementById('mercury-include')
+		mercuryBaseUrl = mercuryEl.src.replace(/\?.*$/,'').replace(/mercury\.(js|coffee)$/, '').replace(/\/+$/, '')+'/'
+
+		# Load in with Buildr
+		mercuryBuildr = new window.Buildr {
+			baseUrl: mercuryBaseUrl
+			beforeEl: mercuryEl
+			serverCompilation: window.serverCompilation or false
+			scripts: scripts
+			styles: styles
+		}
+		mercuryBuildr.load()
+		'''
 	scripts: [
 		'scripts/mercury.coffee'
 		'scripts/native_extensions.coffee'
@@ -59,6 +79,7 @@ config =
 		'styles/tooltip.less'
 		'styles/uploader.less'
 	]
+
 
 # Build
 mercuryBuildr = buildr.createInstance(config)
