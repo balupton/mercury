@@ -45,20 +45,28 @@ The feature list is actually pretty long, so here's a short list that need highl
 - Notes: Attach notes to any page and communicate with other content authors.
 - Colaborative Editing: Edit any page that others are editing at the same time and see their changes in real time.
 
+## Usage
 
-## Get it Going
+### Get Started
 
 	git clone git://github.com/balupton/mercury.git
 	cd mercury
-	npm install -g simple-server
-	simple-server
+	npm install -g coffee-script
+	npm install
+	coffee server.coffee
 
 Then open [http://localhost:3000/src/demo/](http://localhost:3000/src/demo/)
 
 
-## Usage
+### Implementation
 
-Under heavy refactoring, refer to `src/demo/index.html` for the latest.
+Under heavy refactoring, refer to `src/demo` for the latest.
+
+
+### Building
+
+	cd mercury
+	coffee buildr.coffee
 
 
 ## Region Types

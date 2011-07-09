@@ -48,7 +48,7 @@
 	},
 	"dependencies": {
 		"coffee-script": "1.1",
-		"buildr": "0.4.5",
+		"buildr": "0.5.2",
 		"simple-server": "0.4.0"
 	},
 	"engines" : {

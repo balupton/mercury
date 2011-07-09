@@ -16,7 +16,7 @@ config =
 
 		# Prepare
 		mercuryEl = document.getElementById('mercury-include')
-		mercuryBaseUrl = mercuryEl.src.replace(/\?.*$/,'').replace(/mercury\.(js|coffee)$/, '').replace(/\/+$/, '')+'/'
+		mercuryBaseUrl = mercuryEl.src.replace(/\\?.*$/,'').replace(/dev\\.js$/, '').replace(/\\/+$/, '')+'/'
 
 		# Load in with Buildr
 		mercuryBuildr = new window.Buildr {
@@ -27,7 +27,7 @@ config =
 			styles: styles
 		}
 		mercuryBuildr.load()
-		'''
+		''' # note, all \ in this are escaped due to it being in a string
 	scripts: [
 		'scripts/mercury.coffee'
 		'scripts/native_extensions.coffee'
@@ -85,3 +85,4 @@ config =
 mercuryBuildr = buildr.createInstance(config)
 mercuryBuildr.process (err) ->
 	throw err if err
+	console.log 'Building completed'

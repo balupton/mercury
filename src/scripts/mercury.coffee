@@ -1,34 +1,24 @@
-#!
-# Mercury Editor is a Coffeescript and jQuery based WYSIWYG editor.  Documentation and other useful information can be
-# found at https://github.com/jejacks0n/mercury
-#
-# Supported browsers:
-#   - Firefox 4+
-#   - Chrome 10+
-#   - Safari 5+
-#
-# Copyright (c) 2011 Jeremy Jackson
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
-# documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
-# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
-# persons to whom the Software is furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
-# Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-#
-#
+###!
+Mercury Editor is a Coffeescript and jQuery based WYSIWYG editor.  Documentation and other useful information can be found at https://github.com/jejacks0n/mercury
+
+Supported browsers:
+  - Firefox 4+
+  - Chrome 10+
+  - Safari 5+
+
+Copyright (c) 2011 Jeremy Jackson
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+###
 #= require jquery-1.6
 #= require jquery-ui-1.8.13.custom
 #= require jquery.additions
 #= require liquidmetal
 #= require showdown
-#
 #= require_self
 #= require ./native_extensions
 #= require ./page_editor
@@ -52,8 +42,7 @@
 #= require_tree ./regions
 #= require_tree ./dialogs
 #= require_tree ./modals
-#
-
+''
 # iFrame / no-iFrame handle
 if window.top.Mercury? and window.top.Mercury.loaded?
 	window.mercuryWindow = window.top
