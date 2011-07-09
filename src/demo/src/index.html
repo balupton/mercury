@@ -7,7 +7,7 @@
 	<!-- Mercury -->
 	<script>
 		// Render scripts server-side with simple-server for easier debugging
-		window.debug = true;
+		window.serverCompilation = /serverCompilation=true/.test(document.location.href);
 	</script>
 	<script type="text/coffeescript" src="mercury_dialogs.coffee"></script>
 	<script src="../../deps/jquery-1.6.1.js"></script>

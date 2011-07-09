@@ -10,7 +10,7 @@
     silent: false,
     debug: true,
     config: {
-      useIframe: false,
+      editor: 'inline',
       cleanStylesOnPaste: true,
       snippets: {
         optionsUrl: "/mercury/snippets/:name/options",
@@ -497,101 +497,14 @@
 }).call(this);
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  this.Mercury.PageEditor = (function() {
-    function PageEditor(saveUrl, options) {
-      var token;
+  this.Mercury.Editor = (function() {
+    function Editor(saveUrl, options) {
       this.saveUrl = saveUrl != null ? saveUrl : null;
       this.options = options != null ? options : {};
-      if (!Mercury.supported) {
-        throw "Mercury.PageEditor is unsupported in this client. Supported browsers are chrome 10+, firefix 4+, and safari 5+.";
-      }
-      if (window.mercuryInstance) {
-        throw "Mercury.PageEditor can only be instantiated once.";
-      }
-      window.mercuryInstance = this;
-      this.regions = [];
-      this.initializeInterface();
-      if (token = jQuery('meta[name="csrf-token"]').attr('content')) {
-        Mercury.csrfToken = token;
-      }
-      $(function() {
-        return $('body').createPromiseEvent('mercury-ready').trigger('mercury-ready');
-      });
     }
-    PageEditor.prototype.initializeInterface = function() {
-      var _ref, _ref2;
-      if (Mercury.config.useIframe) {
-        document.body.innerHTML = '&nbsp;';
-        this.focusableElement = jQuery('<input>', {
-          type: 'text',
-          style: 'position:absolute;opacity:0'
-        }).appendTo((_ref = this.options.appendTo) != null ? _ref : 'body');
-        this.iframe = jQuery('<iframe>', {
-          "class": 'mercury-iframe',
-          seamless: 'true',
-          frameborder: '0',
-          src: 'about:blank',
-          style: 'position:absolute;top:0;width:100%;visibility:hidden'
-        });
-        this.iframe.appendTo((_ref2 = jQuery(this.options.appendTo).get(0)) != null ? _ref2 : 'body');
-        this.iframe.load(__bind(function() {
-          return this.initializeEditor();
-        }, this));
-        return this.iframe.get(0).contentWindow.document.location.href = this.iframeSrc();
-      } else {
-        this.iframe = false;
-        return this.initializeEditor();
-      }
-    };
-    PageEditor.prototype.initializeEditor = function() {
-      var iframeWindow;
-      this.toolbar = new Mercury.Toolbar(this.options);
-      this.statusbar = new Mercury.Statusbar(this.options);
-      if (this.iframe) {
-        try {
-          if (this.iframe.data('loaded')) {
-            return;
-          }
-          this.iframe.data('loaded', true);
-          this.document = jQuery(this.iframe.get(0).contentWindow.document);
-          jQuery("<style mercury-styles=\"true\">").html(Mercury.config.injectedStyles).appendTo(this.document.find('head'));
-          $('body').css({
-            'overflow': 'hidden'
-          });
-          iframeWindow = this.iframe.get(0).contentWindow;
-          jQuery.globalEval = function(data) {
-            if (data && /\S/.test(data)) {
-              return (iframeWindow.execScript || function(data) {
-                return iframeWindow["eval"].call(iframeWindow, data);
-              })(data);
-            }
-          };
-          iframeWindow.Mercury = Mercury;
-          this.bindEvents();
-          this.initializeRegions();
-          this.finalizeInterface();
-          return this.iframe.css({
-            visibility: 'visible'
-          });
-        } catch (error) {
-          return alert("Mercury.PageEditor failed to load: " + error + "\n\nPlease try refreshing.");
-        }
-      } else {
-        $('body').addClass('mercury-inline').css({
-          'top': this.toolbar.height(),
-          'left': 0,
-          'right': 0,
-          'bottom': 0,
-          'padding-bottom': this.statusbar.height()
-        }).addClass('mercury-hidden');
-        this.document = jQuery(document);
-        jQuery("<style mercury-styles=\"true\">").html(Mercury.config.injectedStyles).appendTo(this.document.find('head'));
-        this.bindEvents();
-        this.initializeRegions();
-        return this.finalizeInterface();
-      }
-    };
-    PageEditor.prototype.initializeRegions = function() {
+    Editor.prototype.initializeInterface = function() {};
+    Editor.prototype.initializeEditor = function() {};
+    Editor.prototype.initializeRegions = function() {
       var region, _i, _len, _ref, _results;
       jQuery('.mercury-region', this.document).mercury();
       _ref = this.regions;
@@ -605,15 +518,11 @@
       }
       return _results;
     };
-    PageEditor.prototype.buildRegion = function(region) {
+    Editor.prototype.buildRegion = function(region, window) {
       var type;
       try {
         type = (region.data('type') || 'rich').titleize();
-        if (this.iframe) {
-          return this.regions.push(new Mercury.Regions[type](region, this.iframe.get(0).contentWindow));
-        } else {
-          return this.regions.push(new Mercury.Regions[type](region, window));
-        }
+        return this.regions.push(new Mercury.Regions[type](region, window));
       } catch (error) {
         if (Mercury.debug) {
           throw error;
@@ -621,25 +530,15 @@
         return alert("Region type is malformed, no data-type provided, or \"" + type + "\" is unknown.");
       }
     };
-    PageEditor.prototype.finalizeInterface = function() {
+    Editor.prototype.finalizeInterface = function() {
       this.snippetToolbar = new Mercury.SnippetToolbar(this.document);
       this.hijackLinks();
       return this.resize();
     };
-    PageEditor.prototype.bindEvents = function() {
+    Editor.prototype.bindEvents = function() {
       Mercury.bind('initialize:frame', __bind(function() {
         return setTimeout(this.initializeFrame, 1000);
       }, this));
-      if (this.iframe) {
-        Mercury.bind('focus:frame', __bind(function() {
-          return this.iframe.focus();
-        }, this));
-        Mercury.bind('focus:window', __bind(function() {
-          return setTimeout((__bind(function() {
-            return this.focusableElement.focus();
-          }, this)), 10);
-        }, this));
-      }
       Mercury.bind('region:focused', function() {
         return $('body').removeClass('mercury-hidden');
       });
@@ -664,7 +563,7 @@
       }, this));
       return window.onbeforeunload = this.beforeUnload;
     };
-    PageEditor.prototype.resize = function() {
+    Editor.prototype.resize = function() {
       var height, toolbarHeight, width;
       width = jQuery(window).width();
       height = this.statusbar.top();
@@ -676,22 +575,9 @@
         height: height - toolbarHeight,
         fullHeight: height
       };
-      if (this.iframe) {
-        this.iframe.css({
-          top: toolbarHeight,
-          left: 0,
-          height: height - toolbarHeight
-        });
-      }
       return Mercury.trigger('resize');
     };
-    PageEditor.prototype.iframeSrc = function(url) {
-      if (url == null) {
-        url = null;
-      }
-      return (url != null ? url : window.location.href).replace(/([http|https]:\/\/.[^\/]*)\/editor\/?(.*)/i, "$1/$2");
-    };
-    PageEditor.prototype.hijackLinks = function() {
+    Editor.prototype.hijackLinks = function() {
       var classname, ignored, link, _i, _j, _len, _len2, _ref, _ref2, _results;
       _ref = jQuery('a', this.document);
       _results = [];
@@ -710,15 +596,14 @@
       }
       return _results;
     };
-    PageEditor.prototype.beforeUnload = function() {
+    Editor.prototype.beforeUnload = function() {
       if (Mercury.changes && !Mercury.silent) {
         return "You have unsaved changes.	Are you sure you want to leave without saving them first?";
       }
       return null;
     };
-    PageEditor.prototype.save = function() {
-      var data, url, _ref;
-      url = (_ref = this.saveUrl) != null ? _ref : this.iframeSrc();
+    Editor.prototype.save = function(url) {
+      var data;
       data = this.serialize();
       Mercury.log('saving', data);
       if (this.options.saveStyle !== 'form') {
@@ -737,7 +622,7 @@
         }, this)
       });
     };
-    PageEditor.prototype.serialize = function() {
+    Editor.prototype.serialize = function() {
       var region, serialized, _i, _len, _ref;
       serialized = {};
       _ref = this.regions;
@@ -747,8 +632,194 @@
       }
       return serialized;
     };
-    return PageEditor;
+    return Editor;
   })();
+}).call(this);
+(function() {
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
+    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor;
+    child.__super__ = parent.prototype;
+    return child;
+  }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  this.Mercury.IframeEditor = (function() {
+    __extends(IframeEditor, this.Mercury.Editor);
+    function IframeEditor(saveUrl, options) {
+      var token;
+      this.saveUrl = saveUrl != null ? saveUrl : null;
+      this.options = options != null ? options : {};
+      IframeEditor.__super__.constructor.apply(this, arguments);
+      if (!Mercury.supported) {
+        throw "Mercury.PageEditor is unsupported in this client. Supported browsers are chrome 10+, firefix 4+, and safari 5+.";
+      }
+      if (window.mercuryInstance) {
+        throw "Mercury.PageEditor can only be instantiated once.";
+      }
+      window.mercuryInstance = this;
+      this.regions = [];
+      this.initializeInterface();
+      if (token = jQuery('meta[name="csrf-token"]').attr('content')) {
+        Mercury.csrfToken = token;
+      }
+      $(function() {
+        return $('body').createPromiseEvent('mercury-ready').trigger('mercury-ready');
+      });
+    }
+    IframeEditor.prototype.initializeInterface = function() {
+      var _ref, _ref2;
+      IframeEditor.__super__.initializeInterface.apply(this, arguments);
+      document.body.innerHTML = '&nbsp;';
+      this.focusableElement = jQuery('<input>', {
+        type: 'text',
+        style: 'position:absolute;opacity:0'
+      }).appendTo((_ref = this.options.appendTo) != null ? _ref : 'body');
+      this.iframe = jQuery('<iframe>', {
+        "class": 'mercury-iframe',
+        seamless: 'true',
+        frameborder: '0',
+        src: 'about:blank'
+      });
+      this.iframe.appendTo((_ref2 = jQuery(this.options.appendTo).get(0)) != null ? _ref2 : 'body');
+      this.iframe.load(__bind(function() {
+        return this.initializeEditor();
+      }, this));
+      return this.iframe.get(0).contentWindow.document.location.href = this.iframeSrc();
+    };
+    IframeEditor.prototype.initializeEditor = function() {
+      var iframeWindow;
+      IframeEditor.__super__.initializeEditor.apply(this, arguments);
+      this.toolbar = new Mercury.Toolbar(this.options);
+      this.statusbar = new Mercury.Statusbar(this.options);
+      try {
+        if (this.iframe.data('loaded')) {
+          return;
+        }
+        this.iframe.data('loaded', true);
+        this.document = jQuery(this.iframe.get(0).contentWindow.document);
+        jQuery("<style mercury-styles=\"true\">").html(Mercury.config.injectedStyles).appendTo(this.document.find('head'));
+        $('body').addClass('mercury-iframe');
+        iframeWindow = this.iframe.get(0).contentWindow;
+        jQuery.globalEval = function(data) {
+          if (data && /\S/.test(data)) {
+            return (iframeWindow.execScript || function(data) {
+              return iframeWindow["eval"].call(iframeWindow, data);
+            })(data);
+          }
+        };
+        iframeWindow.Mercury = Mercury;
+        this.bindEvents();
+        this.initializeRegions();
+        return this.finalizeInterface();
+      } catch (error) {
+        return alert("Mercury.PageEditor failed to load: " + error + "\n\nPlease try refreshing.");
+      }
+    };
+    IframeEditor.prototype.buildRegion = function(region) {
+      return IframeEditor.__super__.buildRegion.call(this, region, this.iframe.get(0).contentWindow);
+    };
+    IframeEditor.prototype.bindEvents = function() {
+      IframeEditor.__super__.bindEvents.apply(this, arguments);
+      Mercury.bind('focus:frame', __bind(function() {
+        return this.iframe.focus();
+      }, this));
+      return Mercury.bind('focus:window', __bind(function() {
+        return setTimeout((__bind(function() {
+          return this.focusableElement.focus();
+        }, this)), 10);
+      }, this));
+    };
+    IframeEditor.prototype.resize = function() {
+      IframeEditor.__super__.resize.apply(this, arguments);
+      return this.iframe.css({
+        top: Mercury.displayRect.top,
+        left: 0,
+        height: Mercury.displayRect.height
+      });
+    };
+    IframeEditor.prototype.iframeSrc = function(url) {
+      if (url == null) {
+        url = null;
+      }
+      return (url != null ? url : window.location.href).replace(/([http|https]:\/\/.[^\/]*)\/editor\/?(.*)/i, "$1/$2");
+    };
+    IframeEditor.prototype.save = function() {
+      var url, _ref;
+      url = (_ref = this.saveUrl) != null ? _ref : this.iframeSrc();
+      return IframeEditor.__super__.save.call(this, url);
+    };
+    return IframeEditor;
+  }).call(this);
+}).call(this);
+(function() {
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
+    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor;
+    child.__super__ = parent.prototype;
+    return child;
+  };
+  this.Mercury.InlineEditor = (function() {
+    __extends(InlineEditor, this.Mercury.Editor);
+    function InlineEditor(saveUrl, options) {
+      var token;
+      this.saveUrl = saveUrl != null ? saveUrl : null;
+      this.options = options != null ? options : {};
+      InlineEditor.__super__.constructor.apply(this, arguments);
+      if (!Mercury.supported) {
+        throw "Mercury.PageEditor is unsupported in this client. Supported browsers are chrome 10+, firefix 4+, and safari 5+.";
+      }
+      if (window.mercuryInstance) {
+        throw "Mercury.PageEditor can only be instantiated once.";
+      }
+      window.mercuryInstance = this;
+      this.regions = [];
+      this.initializeInterface();
+      if (token = $('meta[name="csrf-token"]').attr('content')) {
+        Mercury.csrfToken = token;
+      }
+      $(function() {
+        return $('body').createPromiseEvent('mercury-ready').trigger('mercury-ready');
+      });
+    }
+    InlineEditor.prototype.initializeInterface = function() {
+      InlineEditor.__super__.initializeInterface.apply(this, arguments);
+      return this.initializeEditor();
+    };
+    InlineEditor.prototype.initializeEditor = function() {
+      InlineEditor.__super__.initializeEditor.apply(this, arguments);
+      this.document = $(document);
+      this.toolbar = new Mercury.Toolbar(this.options);
+      this.statusbar = new Mercury.Statusbar(this.options);
+      $('body').addClass('mercury-inline').css({
+        'padding-top': this.toolbar.height(),
+        'padding-bottom': this.statusbar.height()
+      }).addClass('mercury-hidden');
+      $("<style mercury-styles=\"true\">").html(Mercury.config.injectedStyles).appendTo(this.document.find('head'));
+      this.bindEvents();
+      this.initializeRegions();
+      return this.finalizeInterface();
+    };
+    InlineEditor.prototype.buildRegion = function(region) {
+      return InlineEditor.__super__.buildRegion.call(this, region, window);
+    };
+    InlineEditor.prototype.bindEvents = function() {
+      InlineEditor.__super__.bindEvents.apply(this, arguments);
+      Mercury.bind('region:focused', function() {
+        return $('body').removeClass('mercury-hidden');
+      });
+      return Mercury.bind('region:blurred', function() {
+        return $('body').addClass('mercury-hidden');
+      });
+    };
+    InlineEditor.prototype.save = function() {
+      var _ref;
+      return InlineEditor.__super__.save.call(this, (_ref = this.saveUrl) != null ? _ref : document.location.href);
+    };
+    return InlineEditor;
+  }).call(this);
 }).call(this);
 (function() {
   this.Mercury.HistoryBuffer = (function() {
@@ -5080,6 +5151,10 @@
 (function() {
   this.Mercury.loaded = true;
   $(function() {
-    return new window.Mercury.PageEditor();
+    if (window.Mercury.config.editor === 'iframe') {
+      return new window.Mercury.IframeEditor();
+    } else {
+      return new window.Mercury.InlineEditor();
+    }
   });
 }).call(this);

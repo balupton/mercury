@@ -1,3 +1,6 @@
 @Mercury.loaded = true
 $ ->
-	new window.Mercury.PageEditor()
+	if window.Mercury.config.editor is 'iframe'
+		new window.Mercury.IframeEditor()
+	else
+		new window.Mercury.InlineEditor()

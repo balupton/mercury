@@ -14,18 +14,25 @@ html, body {
 	padding: 0;
 }
 
-body.mercury-inline {
+.mercury-iframe {
 	position:absolute;
+	top:0;
+	width:100%;
 }
-body.mercury-inline.mercury-nojump {
-	position:static;
+
+body.mercury-iframe {
+	overflow: hidden;
 }
-body.mercury-hidden {
-	position:static;
-	.mercury-toolbar-container,
-	.mercury-statusbar,
-	.mercury-toolbar {
-		display:none;
+body.mercury-inline {
+	&.mercury-nojump {
+		position:static;
+	}
+	&.mercury-hidden {
+		.mercury-toolbar-container,
+		.mercury-statusbar,
+		.mercury-toolbar {
+			display:none;
+		}
 	}
 }
 

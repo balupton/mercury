@@ -8,7 +8,9 @@ includes =
 		'mercury.coffee'
 		'native_extensions.coffee'
 		'jquery_extensions.coffee'
-		'page_editor.coffee'
+		'editor.coffee'
+		'editors/iframe.coffee'
+		'editors/inline.coffee'
 		'history_buffer.coffee'
 		'table_editor.coffee'
 		'dialog.coffee'
@@ -65,7 +67,7 @@ loadScriptIndex = 0
 loadScript = (next) ->
 	# Prepare
 	scriptSrc = mercuryBase + 'scripts/' + includes.scripts[loadScriptIndex]
-	if window.debug?
+	if window.serverCompilation?
 		scriptSrc += '?js'
 	scriptLoaded = ->
 		if this.readyState? and this.readyState isnt 'complete'
@@ -102,7 +104,7 @@ loadStyleIndex = 0
 loadStyle = (next) ->
 	# Prepare
 	styleHref = mercuryBase + 'styles/' + includes.styles[loadStyleIndex]
-	if window.debug?
+	if window.serverCompilation?
 		styleHref += '?css'
 	styleLoaded = ->
 		++loadStyleIndex
