@@ -57,12 +57,6 @@ class @Mercury.Editor
 
 
 	resize: ->
-		width = jQuery(window).width()
-		height = @statusbar.top()
-		toolbarHeight = @toolbar.height()
-
-		Mercury.displayRect = {top: toolbarHeight, left: 0, width: width, height: height - toolbarHeight, fullHeight: height}
-
 		Mercury.trigger('resize')
 
 

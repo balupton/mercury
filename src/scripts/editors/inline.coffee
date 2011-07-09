@@ -29,10 +29,7 @@ class @Mercury.InlineEditor extends @Mercury.Editor
 		@toolbar = new Mercury.Toolbar(@options)
 		@statusbar = new Mercury.Statusbar(@options)
 
-		$('body').addClass('mercury-inline').css({
-			'padding-top': @toolbar.height()
-			'padding-bottom': @statusbar.height()
-		}).addClass('mercury-hidden')
+		$('body').addClass('mercury-inline').addClass('mercury-hidden')
 
 		$("<style mercury-styles=\"true\">")
 			.html(Mercury.config.injectedStyles)
@@ -49,9 +46,32 @@ class @Mercury.InlineEditor extends @Mercury.Editor
 		super
 
 		Mercury.bind 'region:focused', ->
-			$('body').removeClass('mercury-hidden')
+			$body = $('body')
+			$body.removeClass('mercury-hidden')
+			if Mercury.region.element.offset().top <= window.mercuryInstance.toolbar.height()
+				$body.css {
+					position: 'absolute'
+					top: window.mercuryInstance.toolbar.height()
+				}
+			else
+				$body.css {
+					position: 'static'
+					top: 0
+				}
 		Mercury.bind 'region:blurred', ->
-			$('body').addClass('mercury-hidden')
+			$body = $('body')
+			$body.addClass('mercury-hidden').css {
+				position: 'static'
+				top: 0
+			}
 
 	save: ->
 		super @saveUrl ? document.location.href
+
+	resize: ->
+		width = jQuery(window).width()
+		height = jQuery(window).height()
+
+		Mercury.displayRect = {top: 0, left: 0, width: width, height: height, fullHeight: height}
+
+		super

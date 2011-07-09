@@ -77,13 +77,19 @@ class @Mercury.IframeEditor extends @Mercury.Editor
 		Mercury.bind 'focus:window', => setTimeout((=> @focusableElement.focus()), 10)
 
 	resize: ->
-		super
-		
+		width = jQuery(window).width()
+		height = @statusbar.top()
+		toolbarHeight = @toolbar.height()
+
+		Mercury.displayRect = {top: toolbarHeight, left: 0, width: width, height: height - toolbarHeight, fullHeight: height}
+
 		@iframe.css {
 			top: Mercury.displayRect.top
 			left: 0
 			height: Mercury.displayRect.height
 		}
+		
+		super
 
 	iframeSrc: (url = null) ->
 		(url ? window.location.href).replace(/([http|https]:\/\/.[^\/]*)\/editor\/?(.*)/i, "$1/$2")

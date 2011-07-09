@@ -47,8 +47,11 @@ jQuery.extend Mercury.tooltip, {
 		offset = @forElement.offset()
 		width = @element.width()
 
-		top = offset.top + (Mercury.displayRect.top - jQuery(@document).scrollTop()) + @forElement.outerHeight()
+		top = offset.top + @forElement.outerHeight()
 		left = offset.left - jQuery(@document).scrollLeft()
+
+		unless Mercury.displayRect.height is Mercury.displayRect.fullHeight
+			top += Mercury.displayRect.top - jQuery(@document).scrollTop()
 
 		left = left - (left + width + 25) - Mercury.displayRect.width if (left + width + 25) > Mercury.displayRect.width
 		left = if left <= 0 then 0 else left

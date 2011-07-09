@@ -579,17 +579,6 @@
       return window.onbeforeunload = this.beforeUnload;
     };
     Editor.prototype.resize = function() {
-      var height, toolbarHeight, width;
-      width = jQuery(window).width();
-      height = this.statusbar.top();
-      toolbarHeight = this.toolbar.height();
-      Mercury.displayRect = {
-        top: toolbarHeight,
-        left: 0,
-        width: width,
-        height: height - toolbarHeight,
-        fullHeight: height
-      };
       return Mercury.trigger('resize');
     };
     Editor.prototype.hijackLinks = function() {
@@ -746,12 +735,23 @@
       }, this));
     };
     IframeEditor.prototype.resize = function() {
-      IframeEditor.__super__.resize.apply(this, arguments);
-      return this.iframe.css({
+      var height, toolbarHeight, width;
+      width = jQuery(window).width();
+      height = this.statusbar.top();
+      toolbarHeight = this.toolbar.height();
+      Mercury.displayRect = {
+        top: toolbarHeight,
+        left: 0,
+        width: width,
+        height: height - toolbarHeight,
+        fullHeight: height
+      };
+      this.iframe.css({
         top: Mercury.displayRect.top,
         left: 0,
         height: Mercury.displayRect.height
       });
+      return IframeEditor.__super__.resize.apply(this, arguments);
     };
     IframeEditor.prototype.iframeSrc = function(url) {
       if (url == null) {
@@ -808,10 +808,7 @@
       this.document = $(document);
       this.toolbar = new Mercury.Toolbar(this.options);
       this.statusbar = new Mercury.Statusbar(this.options);
-      $('body').addClass('mercury-inline').css({
-        'padding-top': this.toolbar.height(),
-        'padding-bottom': this.statusbar.height()
-      }).addClass('mercury-hidden');
+      $('body').addClass('mercury-inline').addClass('mercury-hidden');
       $("<style mercury-styles=\"true\">").html(Mercury.config.injectedStyles).appendTo(this.document.find('head'));
       this.bindEvents();
       this.initializeRegions();
@@ -823,15 +820,46 @@
     InlineEditor.prototype.bindEvents = function() {
       InlineEditor.__super__.bindEvents.apply(this, arguments);
       Mercury.bind('region:focused', function() {
-        return $('body').removeClass('mercury-hidden');
+        var $body;
+        $body = $('body');
+        $body.removeClass('mercury-hidden');
+        if (Mercury.region.element.offset().top <= window.mercuryInstance.toolbar.height()) {
+          return $body.css({
+            position: 'absolute',
+            top: window.mercuryInstance.toolbar.height()
+          });
+        } else {
+          return $body.css({
+            position: 'static',
+            top: 0
+          });
+        }
       });
       return Mercury.bind('region:blurred', function() {
-        return $('body').addClass('mercury-hidden');
+        var $body;
+        $body = $('body');
+        return $body.addClass('mercury-hidden').css({
+          position: 'static',
+          top: 0
+        });
       });
     };
     InlineEditor.prototype.save = function() {
       var _ref;
       return InlineEditor.__super__.save.call(this, (_ref = this.saveUrl) != null ? _ref : document.location.href);
+    };
+    InlineEditor.prototype.resize = function() {
+      var height, width;
+      width = jQuery(window).width();
+      height = jQuery(window).height();
+      Mercury.displayRect = {
+        top: 0,
+        left: 0,
+        width: width,
+        height: height,
+        fullHeight: height
+      };
+      return InlineEditor.__super__.resize.apply(this, arguments);
     };
     return InlineEditor;
   }).call(this);
@@ -2464,8 +2492,11 @@
       var left, offset, top, width;
       offset = this.forElement.offset();
       width = this.element.width();
-      top = offset.top + (Mercury.displayRect.top - jQuery(this.document).scrollTop()) + this.forElement.outerHeight();
+      top = offset.top + this.forElement.outerHeight();
       left = offset.left - jQuery(this.document).scrollLeft();
+      if (Mercury.displayRect.height !== Mercury.displayRect.fullHeight) {
+        top += Mercury.displayRect.top - jQuery(this.document).scrollTop();
+      }
       if ((left + width + 25) > Mercury.displayRect.width) {
         left = left - (left + width + 25) - Mercury.displayRect.width;
       }

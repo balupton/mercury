@@ -24,8 +24,10 @@ body.mercury-iframe {
 	overflow: hidden;
 }
 body.mercury-inline {
-	&.mercury-nojump {
-		position:static;
+	.mercury-toolbar-container,
+	.mercury-statusbar,
+	.mercury-toolbar {
+		display:fixed;
 	}
 	&.mercury-hidden {
 		.mercury-toolbar-container,
