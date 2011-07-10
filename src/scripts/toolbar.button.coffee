@@ -83,7 +83,6 @@ class @Mercury.Toolbar.Button
 
 		@element.click (event) =>
 			if @element.closest('.disabled').length then return
-
 			handled = false
 			for own type, mixed of @handled
 				switch type
@@ -127,7 +126,7 @@ class @Mercury.Toolbar.Button
 
 	# todo: overline is a bit weird because <u> and <strike> override text-decoration, so we can't always tell
 	# todo: maybe walk up the tree if it's not too expensive?
-	overline: (node) -> node.css('text-decoration') == 'overline'
+	overline: (node) -> node.css('text-decoration') == 'overline' or node.parent().css('text-decoration') == 'overline'
 
 	# todo: this should never check for tags, because they could be styled differently
 	strikethrough: (node, region) -> node.css('text-decoration') == 'line-through' || !!node.closest('strike', region).length

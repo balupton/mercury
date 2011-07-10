@@ -230,7 +230,6 @@ class @Mercury.Regions.Basic extends Mercury.Region
 				if @selection().fragment.textContent is ''
 					false # do nothing
 					# select the entire word
-		#debugger
 
 		# use a custom handler if there's one, otherwise use execCommand
 		if handler = Mercury.config.behaviors[action] || @actions[action]
@@ -349,10 +348,12 @@ class @Mercury.Regions.Basic extends Mercury.Region
 
 		removeFormatting: (selection) -> selection.insertTextNode(selection.textContent())
 
-		backColor: (selection, options) -> selection.wrap("<span style=\"background-color:#{options.value.toHex()}\">", true)
-
-		overline: (selection) -> selection.wrap('<span style="text-decoration:overline">', true)
-
+		backColor: (selection, options) ->
+			selection.changeStyle('background-color',options.value.toHex())
+		
+		overline: (selection) ->
+			selection.toggleStyle('text-decoration','overline')
+			
 		style: (selection, options) -> selection.wrap("<span class=\"#{options.value}\">", true)
 
 		replaceHTML: (selection, options) -> @content(options.value)
@@ -389,12 +390,56 @@ class @Mercury.Regions.Basic extends Mercury.Region
 	# Helper class for managing selection and getting information from it
 	Selection: class
 
+		selection: null
+		context: null
+		range: null
+		fragment: null
+		clone: null
+
 		constructor: (@selection, @context) ->
 			return unless @selection.rangeCount >= 1
 			@range = @selection.getRangeAt(0)
 			@fragment = @range.cloneContents()
 			@clone = @range.cloneRange()
+		
 
+		toggleStyle: (name,value) ->
+			style = 'mercury-'+name
+			unless @cleanStyle(style)
+				@wrap('<span class="'+style+'" style="'+name+':'+value+'">', true)
+	
+
+		cleanStyle: (style) ->
+			# Prepare
+			$parent = @commonAncestor().parent()
+			$selection = $parent
+			cleaned = false
+
+			# Clean the Style from Parent
+			if $parent.is('.'+style)
+				$selection = $parent.contents()
+				$parent.replaceWith $selection
+				cleaned = true
+			
+			# Clean the Style from Children
+			$parent.find('.'+style).each ->
+				$this = $(this)
+				$this.replaceWith $this.contents()
+				cleaned = true
+			
+			# Update selection
+			if cleaned
+				# TODO: Reselect the fragment
+			
+			# Did we clean or not?
+			cleaned
+		
+
+		changeStyle: (name,value) ->
+			style = 'mercury-'+name
+			@cleanStyle(style)
+			@wrap('<span class="'+style+'" style="'+name+':'+value+'">', true)
+		
 
 		commonAncestor: (onlyTag = false) ->
 			return null unless @range

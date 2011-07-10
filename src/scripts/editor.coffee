@@ -46,8 +46,9 @@ class @Mercury.Editor
 		
 		Mercury.bind 'action', (event, options) =>
 			 @save() if options.action == 'save'
-
-		@document.mousedown (event) ->
+		
+		# needs to be click
+		@document.click (event) ->
 			Mercury.trigger('hide:dialogs')
 			if Mercury.region
 				Mercury.trigger('unfocus:regions') unless jQuery(event.target).closest('.mercury-region').get(0) == Mercury.region.element.get(0)
