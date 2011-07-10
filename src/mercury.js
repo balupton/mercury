@@ -565,7 +565,7 @@
           return this.save();
         }
       }, this));
-      this.document.mousedown(function(event) {
+      this.document.click(function(event) {
         Mercury.trigger('hide:dialogs');
         if (Mercury.region) {
           if (jQuery(event.target).closest('.mercury-region').get(0) !== Mercury.region.element.get(0)) {
@@ -2233,7 +2233,7 @@
       return node.css('font-style') === 'italic';
     },
     overline: function(node) {
-      return node.css('text-decoration') === 'overline';
+      return node.css('text-decoration') === 'overline' || node.parent().css('text-decoration') === 'overline';
     },
     strikethrough: function(node, region) {
       return node.css('text-decoration') === 'line-through' || !!node.closest('strike', region).length;
@@ -3655,10 +3655,10 @@
         return selection.insertTextNode(selection.textContent());
       },
       backColor: function(selection, options) {
-        return selection.wrap("<span style=\"background-color:" + (options.value.toHex()) + "\">", true);
+        return selection.changeStyle('background-color', options.value.toHex());
       },
       overline: function(selection) {
-        return selection.wrap('<span style="text-decoration:overline">', true);
+        return selection.toggleStyle('text-decoration', 'overline');
       },
       style: function(selection, options) {
         return selection.wrap("<span class=\"" + options.value + "\">", true);
@@ -3710,6 +3710,11 @@
       }
     };
     Basic.prototype.Selection = (function() {
+      _Class.prototype.selection = null;
+      _Class.prototype.context = null;
+      _Class.prototype.range = null;
+      _Class.prototype.fragment = null;
+      _Class.prototype.clone = null;
       function _Class(selection, context) {
         this.selection = selection;
         this.context = context;
@@ -3720,6 +3725,37 @@
         this.fragment = this.range.cloneContents();
         this.clone = this.range.cloneRange();
       }
+      _Class.prototype.toggleStyle = function(name, value) {
+        var style;
+        style = 'mercury-' + name;
+        if (!this.cleanStyle(style)) {
+          return this.wrap('<span class="' + style + '" style="' + name + ':' + value + '">', true);
+        }
+      };
+      _Class.prototype.cleanStyle = function(style) {
+        var $parent, $selection, cleaned;
+        $parent = this.commonAncestor().parent();
+        $selection = $parent;
+        cleaned = false;
+        if ($parent.is('.' + style)) {
+          $selection = $parent.contents();
+          $parent.replaceWith($selection);
+          cleaned = true;
+        }
+        $parent.find('.' + style).each(function() {
+          var $this;
+          $this = $(this);
+          $this.replaceWith($this.contents());
+          return cleaned = true;
+        });
+        return cleaned;
+      };
+      _Class.prototype.changeStyle = function(name, value) {
+        var style;
+        style = 'mercury-' + name;
+        this.cleanStyle(style);
+        return this.wrap('<span class="' + style + '" style="' + name + ':' + value + '">', true);
+      };
       _Class.prototype.commonAncestor = function(onlyTag) {
         var ancestor;
         if (onlyTag == null) {
@@ -4793,7 +4829,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   this.Mercury.dialogHandlers.backColor = function() {
-    return this.element.find('.picker, .last-picked').click(__bind(function(event) {
+    return this.element.find('.picker, .last-picked').mousedown(__bind(function(event) {
       var color;
       color = jQuery(event.target).css('background-color');
       this.element.find('.last-picked').css({
@@ -4812,7 +4848,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   this.Mercury.dialogHandlers.foreColor = function() {
-    return this.element.find('.picker, .last-picked').click(__bind(function(event) {
+    return this.element.find('.picker, .last-picked').mousedown(__bind(function(event) {
       var color;
       color = jQuery(event.target).css('background-color');
       this.element.find('.last-picked').css({

@@ -428,7 +428,7 @@ class @Mercury.Regions.Basic extends Mercury.Region
 				cleaned = true
 			
 			# Update selection
-			if cleaned
+			#if cleaned
 				# TODO: Reselect the fragment
 			
 			# Did we clean or not?
