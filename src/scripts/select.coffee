@@ -24,9 +24,14 @@ class @Mercury.Select extends Mercury.Dialog
 		elementHeight = @element.height()
 		documentHeight = jQuery(document).height()
 
-		top = position.top + (@button.height() / 2) - (elementHeight / 2)
-		top = position.top - 100 if top < position.top - 100
-		top = 20 if top < 20
+		# Inline
+		if Mercury.displayRect.height is Mercury.displayRect.fullHeight
+			top = position.top + @button.height() - jQuery(document).scrollTop()
+		# Iframe
+		else
+			top = position.top + (@button.height() / 2) - (elementHeight / 2)
+			top = position.top - 100 if top < position.top - 100
+			top = 20 if top < 20
 
 		height = if @loaded then 'auto' else elementHeight
 		height = documentHeight - top - 20 if top + elementHeight >= documentHeight - 20

@@ -1480,12 +1480,16 @@
       elementWidth = this.element.width();
       elementHeight = this.element.height();
       documentHeight = jQuery(document).height();
-      top = position.top + (this.button.height() / 2) - (elementHeight / 2);
-      if (top < position.top - 100) {
-        top = position.top - 100;
-      }
-      if (top < 20) {
-        top = 20;
+      if (Mercury.displayRect.height === Mercury.displayRect.fullHeight) {
+        top = position.top + this.button.height() - jQuery(document).scrollTop();
+      } else {
+        top = position.top + (this.button.height() / 2) - (elementHeight / 2);
+        if (top < position.top - 100) {
+          top = position.top - 100;
+        }
+        if (top < 20) {
+          top = 20;
+        }
       }
       height = this.loaded ? 'auto' : elementHeight;
       if (top + elementHeight >= documentHeight - 20) {

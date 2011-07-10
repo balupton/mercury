@@ -50,6 +50,7 @@ jQuery.extend Mercury.tooltip, {
 		top = offset.top + @forElement.outerHeight()
 		left = offset.left - jQuery(@document).scrollLeft()
 
+		# Iframe
 		unless Mercury.displayRect.height is Mercury.displayRect.fullHeight
 			top += Mercury.displayRect.top - jQuery(@document).scrollTop()
 
