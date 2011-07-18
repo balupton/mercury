@@ -66,9 +66,12 @@ class @Mercury.Regions.Basic extends Mercury.Region
 			return if @previewing
 			return unless Mercury.region == @
 			Mercury.changes = true
+			if @specialContainer
+				event.preventDefault()
+				return
 			content = @content()
-			event.preventDefault() if @specialContainer
-			setTimeout((=> @handlePaste(content)), 1)
+			clearTimeout(@handlePasteTimeout)
+			@handlePasteTimeout = setTimeout((=> @handlePaste(content)), 100)
 
 		@element.focus =>
 			return if @previewing
@@ -109,7 +112,7 @@ class @Mercury.Regions.Basic extends Mercury.Region
 				when 13 # enter
 					event.preventDefault()
 					return false
-				
+
 				when 9 # tab
 					event.preventDefault()
 					container = @selection().commonAncestor()
@@ -350,10 +353,10 @@ class @Mercury.Regions.Basic extends Mercury.Region
 
 		backColor: (selection, options) ->
 			selection.changeStyle('background-color',options.value.toHex())
-		
+
 		overline: (selection) ->
 			selection.toggleStyle('text-decoration','overline')
-			
+
 		style: (selection, options) -> selection.wrap("<span class=\"#{options.value}\">", true)
 
 		replaceHTML: (selection, options) -> @content(options.value)
@@ -401,13 +404,13 @@ class @Mercury.Regions.Basic extends Mercury.Region
 			@range = @selection.getRangeAt(0)
 			@fragment = @range.cloneContents()
 			@clone = @range.cloneRange()
-		
+
 
 		toggleStyle: (name,value) ->
 			style = 'mercury-'+name
 			unless @cleanStyle(style)
 				@wrap('<span class="'+style+'" style="'+name+':'+value+'">', true)
-	
+
 
 		cleanStyle: (style) ->
 			# Prepare
@@ -420,26 +423,26 @@ class @Mercury.Regions.Basic extends Mercury.Region
 				$selection = $parent.contents()
 				$parent.replaceWith $selection
 				cleaned = true
-			
+
 			# Clean the Style from Children
 			$parent.find('.'+style).each ->
 				$this = $(this)
 				$this.replaceWith $this.contents()
 				cleaned = true
-			
+
 			# Update selection
 			#if cleaned
 				# TODO: Reselect the fragment
-			
+
 			# Did we clean or not?
 			cleaned
-		
+
 
 		changeStyle: (name,value) ->
 			style = 'mercury-'+name
 			@cleanStyle(style)
 			@wrap('<span class="'+style+'" style="'+name+':'+value+'">', true)
-		
+
 
 		commonAncestor: (onlyTag = false) ->
 			return null unless @range

@@ -3286,13 +3286,15 @@
           return;
         }
         Mercury.changes = true;
-        content = this.content();
         if (this.specialContainer) {
           event.preventDefault();
+          return;
         }
-        return setTimeout((__bind(function() {
+        content = this.content();
+        clearTimeout(this.handlePasteTimeout);
+        return this.handlePasteTimeout = setTimeout((__bind(function() {
           return this.handlePaste(content);
-        }, this)), 1);
+        }, this)), 100);
       }, this));
       this.element.focus(__bind(function() {
         if (this.previewing) {
