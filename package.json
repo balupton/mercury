@@ -47,9 +47,9 @@
 		"url" : "http://github.com/balupton/mercury.git"
 	},
 	"dependencies": {
-		"coffee-script": "1.1",
-		"buildr": "0.5.4",
-		"simple-server": "0.4.0"
+		"coffee-script": "=1.1.1",
+		"buildr": "=0.6.4",
+		"simple-server": "=0.4.0"
 	},
 	"engines" : {
 		"node": ">=0.4.0"

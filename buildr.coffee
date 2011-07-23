@@ -3,32 +3,21 @@ buildr = require 'buildr'
 
 # Includes
 config = 
+	# Paths
 	srcPath: __dirname+'/src'
 	outPath: __dirname+'/src'
-	compress: true
-	outStylePath: __dirname+'/src/mercury.css'
-	outScriptPath: __dirname+'/src/mercury.js'
-	srcLoaderPath: __dirname+'/src/dev.js'
-	srcLoaderHeader: '''
-		# Cancel if inside the Mercury iFrame
-		if window.top.Mercury? and window.top.Mercury.loaded?
-			return
 
-		# Prepare
-		mercuryEl = document.getElementById('mercury-include')
-		mercuryBaseUrl = mercuryEl.src.replace(/\\?.*$/,'').replace(/dev\\.js$/, '').replace(/\\/+$/, '')+'/'
+	# Checking
+	checkScripts: false
+	checkStyles: false
 
-		# Load in with Buildr
-		mercuryBuildr = new window.Buildr {
-			baseUrl: mercuryBaseUrl
-			beforeEl: mercuryEl
-			serverCompilation: window.serverCompilation or false
-			scripts: scripts
-			styles: styles
-		}
-		mercuryBuildr.load()
-		''' # note, all \ in this are escaped due to it being in a string
-	scripts: [
+	# Compression (requires outPath)
+	compressScripts: true # Array or true or false
+	compressStyles: true # Array or true or false
+	compressImages: true # Array or true or false
+
+	# Order
+	scriptsOrder: [
 		'scripts/mercury.coffee'
 		'scripts/native_extensions.coffee'
 		'scripts/jquery_extensions.coffee'
@@ -70,7 +59,7 @@ config =
 		'scripts/modals/inserttable.coffee'
 		'scripts/loaded.coffee'
 	]
-	styles: [
+	stylesOrder: [
 		'styles/mercury.less'
 		'styles/dialog.less'
 		'styles/modal.less'
@@ -79,6 +68,33 @@ config =
 		'styles/tooltip.less'
 		'styles/uploader.less'
 	]
+
+	# Bundling
+	bundleStylePath: __dirname+'/src/mercury.css'
+	bundleScriptPath: __dirname+'/src/mercury.js'
+
+	# Loaders
+	srcLoaderPath: __dirname+'/src/dev.js'
+	srcLoaderHeader: '''
+		# Cancel if inside the Mercury iFrame
+		if window.top.Mercury? and window.top.Mercury.loaded?
+			return
+
+		# Prepare
+		mercuryEl = document.getElementById('mercury-include')
+		mercuryBaseUrl = mercuryEl.src.replace(/\\?.*$/,'').replace(/dev\\.js$/, '').replace(/\\/+$/, '')+'/'
+
+		# Load in with Buildr
+		mercuryBuildr = new window.Buildr {
+			baseUrl: mercuryBaseUrl
+			beforeEl: mercuryEl
+			serverCompilation: window.serverCompilation or false
+			scripts: scripts
+			styles: styles
+		}
+		mercuryBuildr.load()
+		''' # note, all \ in this are escaped due to it being in a string
+
 
 
 # Build
